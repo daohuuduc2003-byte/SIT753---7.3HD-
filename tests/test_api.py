@@ -156,3 +156,20 @@ def test_email_regex_accepts_subdomains(client):
 def test_email_regex_rejects_missing_domain_part(client):
     payload = dict(VALID_CONTACT, email="alex@example")
     assert client.post("/api/contacts", json=payload).status_code == 422
+
+
+# ── Query filters after removing dynamic SQL ──
+
+def test_contact_subject_filter(client):
+    client.post("/api/contacts", json=VALID_CONTACT)
+    client.post("/api/contacts", json=dict(VALID_CONTACT, subject="gear"))
+    body = client.get("/api/contacts", query_string={"subject": "gear"}).get_json()
+    assert body["meta"]["total"] == 1
+    assert body["data"][0]["subject"] == "gear"
+
+
+def test_reviews_without_trail_returns_all(client):
+    client.post("/api/reviews", json=REVIEW)
+    client.post("/api/reviews", json=dict(REVIEW, trail_name="Dandenong Ridge"))
+    body = client.get("/api/reviews").get_json()
+    assert body["meta"]["total"] == 2

@@ -174,22 +174,24 @@ def list_contacts():
     subject = request.args.get("subject", "").strip()
 
     like = f"%{search}%" if search else "%"
-    where = "WHERE (name LIKE ? OR email LIKE ? OR message LIKE ?)"
-    params = [like, like, like]
-
-    if subject:
-        where += " AND subject = ?"
-        params.append(subject)
+    # Fixed SQL text: every user value is bound through ? placeholders
+    params = [like, like, like, subject, subject]
 
     try:
         with get_db() as conn:
             total = conn.execute(
-                f"SELECT COUNT(*) FROM contacts {where}", params
+                "SELECT COUNT(*) FROM contacts "
+                "WHERE (name LIKE ? OR email LIKE ? OR message LIKE ?) "
+                "AND (? = '' OR subject = ?)",
+                params
             ).fetchone()[0]
 
             rows = conn.execute(
-                f"SELECT id,name,email,phone,subject,message,status,created_at "
-                f"FROM contacts {where} ORDER BY created_at DESC LIMIT ? OFFSET ?",
+                "SELECT id,name,email,phone,subject,message,status,created_at "
+                "FROM contacts "
+                "WHERE (name LIKE ? OR email LIKE ? OR message LIKE ?) "
+                "AND (? = '' OR subject = ?) "
+                "ORDER BY created_at DESC LIMIT ? OFFSET ?",
                 params + [limit, offset]
             ).fetchall()
 
@@ -362,20 +364,24 @@ def list_reviews():
     limit  = min(10, int(request.args.get("limit", 3)))
     offset = (page - 1) * limit
 
-    where  = "WHERE trail_name = ?" if trail else ""
-    params = [trail] if trail else []
+    # Fixed SQL text: an empty trail means all trails, bound through ? placeholders
+    params = [trail, trail]
 
     try:
         with get_db() as conn:
             total   = conn.execute(
-                f"SELECT COUNT(*) FROM trail_reviews {where}", params
+                "SELECT COUNT(*) FROM trail_reviews WHERE (? = '' OR trail_name = ?)",
+                params
             ).fetchone()[0]
             avg_row = conn.execute(
-                f"SELECT AVG(CAST(rating AS REAL)) FROM trail_reviews {where}", params
+                "SELECT AVG(CAST(rating AS REAL)) FROM trail_reviews "
+                "WHERE (? = '' OR trail_name = ?)",
+                params
             ).fetchone()[0]
             rows = conn.execute(
-                f"SELECT id, trail_name, reviewer, rating, comment, created_at "
-                f"FROM trail_reviews {where} ORDER BY created_at DESC LIMIT ? OFFSET ?",
+                "SELECT id, trail_name, reviewer, rating, comment, created_at "
+                "FROM trail_reviews WHERE (? = '' OR trail_name = ?) "
+                "ORDER BY created_at DESC LIMIT ? OFFSET ?",
                 params + [limit, offset]
             ).fetchall()
 
