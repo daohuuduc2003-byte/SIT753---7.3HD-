@@ -19,3 +19,7 @@ test-results.xml
 
 # macOS
 .DS_Store
+
+# Pipeline output
+reports/
+*.tar.gz
