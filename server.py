@@ -7,24 +7,35 @@ Open: http://localhost:3000
 """
 
 import os, re, sqlite3, html
+from contextlib import contextmanager
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__, static_folder="public")
 CORS(app)
+metrics = PrometheusMetrics(app)   # exposes /metrics for the Monitoring stage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH  = os.path.join(BASE_DIR, "rivertrail.db")
+DB_PATH  = os.environ.get("DATABASE_PATH", os.path.join(BASE_DIR, "rivertrail.db"))
 
 # ── Database helpers ─────────────────────────────────────
 
+@contextmanager
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
-    return conn
+    try:
+        yield conn
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
 
 def init_db():
     with get_db() as c:
@@ -78,6 +89,17 @@ def clean(s, maxlen=1000):
 
 def err(msg, code=400):
     return jsonify({"success": False, "error": msg}), code
+
+# ── Health check (used by Deploy, Release and Monitoring) ──
+
+@app.route("/health")
+def health():
+    try:
+        with get_db() as conn:
+            conn.execute("SELECT 1")
+        return jsonify({"status": "ok", "database": "ok"}), 200
+    except Exception:
+        return jsonify({"status": "error", "database": "unreachable"}), 503
 
 # ── Serve static HTML / CSS / JS files ───────────────────
 
@@ -376,10 +398,14 @@ def delete_review(review_id):
 
 # ── Start ─────────────────────────────────────────────────
 
+# Create tables on import so gunicorn and the tests get a ready database
+init_db()
+
 if __name__ == "__main__":
-    init_db()
-    print("\n🥾  River Trail Adventures — Task 10.2D")
-    print(f"   Server  → http://localhost:3000")
+    host = os.environ.get("HOST", "127.0.0.1")
+    port = int(os.environ.get("PORT", 3000))
+    print("\n🥾  River Trail Adventures")
+    print(f"   Server  → http://localhost:{port}")
     print(f"   DB      → {DB_PATH}")
     print("   Press Ctrl+C to stop\n")
-    app.run(host="127.0.0.1", port=3000, debug=False)
+    app.run(host=host, port=port, debug=False)

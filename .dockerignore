@@ -1,0 +1,9 @@
+.git/
+venv/
+tests/
+__pycache__/
+*.db
+node_modules/
+.DS_Store
+.pytest_cache/
+.coverage
