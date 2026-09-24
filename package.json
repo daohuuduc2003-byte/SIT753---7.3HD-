@@ -1,0 +1,12 @@
+{
+  "name": "river-trail-website",
+  "version": "1.0.0",
+  "description": "River Trail Adventures Website - SIT774 Task 5.2D",
+  "main": "server.js",
+  "scripts": {
+    "start": "/Users/huuducdao/opt/anaconda3/bin/python server.py"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
