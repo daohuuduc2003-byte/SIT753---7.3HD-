@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="River Trail Adventures – My Trail Journal. Track your hikes, earn badges and get personalised trail recommendations.">
+  <title>River Trail Adventures | My Trail Journal</title>
+  <link rel="stylesheet" href="style.css">
+ 
+  <style>
+    /* ── Journal-specific design tokens ─────────────────────*/
+    :root {
+      --j-teal:      #0f766e;
+      --j-teal-pale: #f0fdfa;
+      --j-purple:    #6d28d9;
+      --j-purple-pale:#f5f3ff;
+      --j-amber:     #d97706;
+      --j-amber-pale:#fffbeb;
+      --j-red:       #dc2626;
+      --j-blue:      #2563eb;
+      --j-blue-pale: #eff6ff;
+    }
+
+    /* ── Journal hero banner ─────────────────────────────── */
+    .journal-hero {
+      background: linear-gradient(135deg, #1a3d1a 0%, #2d6a2d 50%, #1a4a3a 100%);
+      color: #fff;
+      padding: 3rem 0 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .journal-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .journal-hero h1 {
+      color: #fff;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      margin-bottom: .4rem;
+      text-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    .journal-hero p { color: rgba(255,255,255,.82); font-size: 1.05rem; }
+
+    /* ── Stat cards ──────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media(max-width:767px){ .stats-grid{ grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:400px){ .stats-grid{ grid-template-columns:1fr; } }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.4rem 1.2rem 1.1rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .stat-card .accent-bar {
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      border-radius: 12px 12px 0 0;
+    }
+    .stat-card .stat-val {
+      font-family: 'Merriweather', Georgia, serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin: .5rem 0 .25rem;
+      transition: all .4s ease;
+    }
+    .stat-card .stat-label { font-size: .8rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .stat-card .stat-icon { font-size: 1.6rem; margin-bottom: .3rem; }
+
+    /* ── Main two-column layout ──────────────────────────── */
+    .journal-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media(max-width:900px){ .journal-layout{ grid-template-columns:1fr; } }
+
+    /* ── Hike log table ──────────────────────────────────── */
+    .panel {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+    }
+    .panel-header {
+      padding: .9rem 1.4rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--light-gray);
+    }
+    .panel-header h3 { font-size: 1rem; color: var(--green-dark); margin: 0; }
+    .panel-body { padding: 1.2rem 1.4rem; }
+
+    .hike-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .hike-table th {
+      background: var(--green-dark); color: #fff;
+      padding: .55rem .8rem; text-align: left;
+      font-size: .8rem; letter-spacing: .3px;
+    }
+    .hike-table td { padding: .55rem .8rem; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    .hike-table tr:last-child td { border-bottom: none; }
+    .hike-table tr:hover td { background: var(--j-teal-pale); }
+    .hike-stars { color: #f59e0b; font-size: .9rem; letter-spacing: 1px; }
+    .hike-del {
+      background: none; border: 1px solid #fca5a5; color: var(--j-red);
+      padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: .76rem;
+      transition: background .15s;
+    }
+    .hike-del:hover { background: #fef2f2; }
+    .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--gray); }
+    .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: .6rem; }
+    .empty-state p { font-size: .9rem; }
+
+    /* ── Log a Hike button ───────────────────────────────── */
+    .btn-log {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--green-light); color: #fff;
+      border: none; border-radius: 8px;
+      padding: .55rem 1.2rem; font-size: .92rem;
+      font-weight: 600; cursor: pointer;
+      transition: background .2s, transform .15s;
+      font-family: inherit;
+    }
+    .btn-log:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+    /* ── Progress bar ────────────────────────────────────── */
+    .progress-section { margin-bottom: 1.2rem; }
+    .progress-label { display: flex; justify-content: space-between; font-size: .82rem; color: var(--gray); margin-bottom: .35rem; }
+    .progress-bar { height: 10px; background: #e5e7eb; border-radius: 20px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 20px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+
+    /* ── Badge shelf ─────────────────────────────────────── */
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .75rem;
+    }
+    .badge-item {
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      padding: .8rem .5rem;
+      text-align: center;
+      transition: all .2s;
+      position: relative;
+    }
+    .badge-item.earned {
+      border-color: var(--j-amber);
+      background: var(--j-amber-pale);
+      box-shadow: 0 2px 8px rgba(217,119,6,.15);
+    }
+    .badge-item.locked { opacity: .45; filter: grayscale(1); }
+    .badge-icon { font-size: 1.8rem; display: block; margin-bottom: .3rem; }
+    .badge-name { font-size: .72rem; font-weight: 600; color: var(--dark); }
+    .badge-desc { font-size: .66rem; color: var(--gray); margin-top: .15rem; line-height: 1.3; }
+    .badge-item.earned .badge-name { color: var(--j-amber); }
+    .badge-new-tag {
+      position: absolute; top: -6px; right: -6px;
+      background: var(--j-red); color: #fff;
+      font-size: .6rem; font-weight: 700;
+      padding: 2px 5px; border-radius: 10px;
+    }
+
+    /* ── Recommender card ────────────────────────────────── */
+    .rec-card {
+      background: linear-gradient(135deg, var(--j-blue-pale) 0%, #e0f2fe 100%);
+      border: 1.5px solid #bae6fd;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .rec-card h4 { font-size: .95rem; color: var(--j-blue); margin-bottom: .5rem; }
+    .rec-trail-name { font-size: 1.1rem; font-weight: 700; color: var(--green-dark); }
+    .rec-meta { font-size: .82rem; color: var(--gray); margin: .2rem 0 .5rem; }
+    .rec-match {
+      display: inline-block;
+      background: var(--green-light); color: #fff;
+      padding: 2px 10px; border-radius: 20px;
+      font-size: .75rem; font-weight: 700;
+    }
+    .rec-reason { font-size: .8rem; color: var(--gray); margin-top: .5rem; font-style: italic; }
+    .rec-empty { text-align: center; padding: 1rem; color: var(--gray); font-size: .88rem; font-style: italic; }
+
+    /* ── Modal ───────────────────────────────────────────── */
+    .j-modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.55); z-index: 2000;
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .j-modal-overlay.open { display: flex; }
+    .j-modal {
+      background: #fff; border-radius: 16px;
+      max-width: 520px; width: 100%;
+      padding: 0; overflow: hidden;
+      animation: modalSlide .28s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    }
+    @keyframes modalSlide { from{ transform:translateY(20px);opacity:0; } to{ transform:translateY(0);opacity:1; } }
+    .j-modal-head {
+      background: var(--green-dark); color: #fff;
+      padding: 1.1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .j-modal-head h3 { font-size: 1.1rem; color: #fff; margin: 0; }
+    .j-modal-close {
+      background: none; border: none; color: rgba(255,255,255,.8);
+      font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 0;
+    }
+    .j-modal-close:hover { color: #fff; }
+    .j-modal-body { padding: 1.5rem; }
+
+    /* Form elements inside modal */
+    .j-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; margin-bottom: .9rem; }
+    .j-form-row.full { grid-template-columns: 1fr; }
+    .j-label { font-size: .85rem; font-weight: 600; color: var(--dark); display: block; margin-bottom: .3rem; }
+    .j-input {
+      width: 100%; padding: .5rem .8rem;
+      border: 1.5px solid var(--border); border-radius: 7px;
+      font-family: inherit; font-size: .92rem;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .j-input:focus { border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(58,125,58,.12); outline: none; }
+    .j-input.err { border-color: var(--j-red); }
+
+    /* Star picker inside modal */
+    .star-pick { display: flex; gap: .3rem; margin-bottom: .9rem; }
+    .star-pick span {
+      font-size: 2rem; cursor: pointer;
+      color: #d1d5db; transition: color .12s, transform .1s;
+      user-select: none;
+    }
+    .star-pick span:hover, .star-pick span.lit { color: #f59e0b; transform: scale(1.15); }
+
+    /* Modal actions */
+    .j-modal-actions { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1.2rem; }
+    .btn-cancel {
+      padding: .55rem 1.2rem; background: var(--light-gray);
+      border: 1px solid var(--border); border-radius: 7px;
+      font-family: inherit; font-size: .92rem; cursor: pointer;
+    }
+    .btn-save {
+      padding: .55rem 1.4rem; background: var(--green-light); color: #fff;
+      border: none; border-radius: 7px; font-family: inherit;
+      font-size: .92rem; font-weight: 600; cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-save:hover { background: var(--green-dark); }
+    .j-err { color: var(--j-red); font-size: .8rem; margin-top: .3rem; display: none; }
+
+    /* ── Badge unlock toast ─────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--green-dark); color: #fff;
+      padding: .9rem 1.8rem; border-radius: 50px;
+      font-weight: 600; font-size: .95rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,.25);
+      z-index: 3000;
+      transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .4s;
+      opacity: 0; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ── Counter animation ───────────────────────────────── */
+    @keyframes countUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .stat-val.animate { animation: countUp .4s ease forwards; }
+
+    /* ── Streak flame ────────────────────────────────────── */
+    .streak-flame {
+      font-size: .9rem;
+      animation: flicker 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes flicker { from { filter: brightness(1); } to { filter: brightness(1.3) drop-shadow(0 0 4px #f59e0b); } }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="greeting-banner" aria-live="polite"></div>
+
+  <!-- ── Navigation ─────────────────────────────────────── -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem;">
+      <a class="navbar-brand" href="index.html">🥾 River Trail</a>
+      <button class="navbar-toggler" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <ul class="navbar-nav" id="navMenu" style="display:flex; list-style:none; gap:.2rem; flex-wrap:wrap;">
+        <li><a class="nav-link" href="index.html">Home</a></li>
+        <li><a class="nav-link" href="routes.html">Routes</a></li>
+        <li><a class="nav-link" href="gear.html">Gear</a></li>
+        <li><a class="nav-link" href="stories.html">Stories</a></li>
+        <li><a class="nav-link" href="membership.html">Membership</a></li>
+        <li><a class="nav-link active" href="journal.html" aria-current="page">📋 Journal</a></li>
+        <li><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Hero ─────────────────────────────────────────── -->
+  <div class="journal-hero">
+    <div class="container">
+      <h1>🗒️ My Trail Journal</h1>
+      <p id="hero-subtitle">Track every hike. Earn badges. Discover what's next.</p>
+    </div>
+  </div>
+
+  <main id="main-content">
+    <section class="section-pad-sm">
+      <div class="container">
+
+        <!-- ── Stat Cards ─────────────────────────────── -->
+        <div class="stats-grid">
+          <div class="stat-card reveal">
+            <div class="accent-bar" style="background:var(--green-light);"></div>
+            <div class="stat-icon">🥾</div>
+            <div class="stat-val" id="stat-hikes">0</div>
+            <div class="stat-label">Total Hikes</div>
+          </div>
+          <div class="stat-card reveal">
+            <div class="accent-bar" style="background:var(--j-teal);"></div>
+            <div class="stat-icon">📏</div>
+            <div class="stat-val" id="stat-km">0.0</div>
+            <div class="stat-label">km Walked</div>
+          </div>
+          <div class="stat-card reveal">
+            <div class="accent-bar" style="background:var(--j-amber);"></div>
+            <div class="stat-icon"><span class="streak-flame">🔥</span></div>
+            <div class="stat-val" id="stat-streak">0</div>
+            <div class="stat-label">Week Streak</div>
+          </div>
+          <div class="stat-card reveal">
+            <div class="accent-bar" style="background:var(--j-purple);"></div>
+            <div class="stat-icon">🏅</div>
+            <div class="stat-val" id="stat-badges">0</div>
+            <div class="stat-label">Badges Earned</div>
+          </div>
+        </div>
+
+        <!-- ── km Progress Bar ─────────────────────────── -->
+        <div class="progress-section reveal">
+          <div class="progress-label">
+            <span id="prog-label">km towards 100 km milestone</span>
+            <span id="prog-pct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="prog-fill" style="width:0%; background: linear-gradient(90deg, var(--green-light), var(--j-teal));"></div>
+          </div>
+        </div>
+
+        <!-- ── Main Layout ─────────────────────────────── -->
+        <div class="journal-layout">
+
+          <!-- LEFT: Hike log -->
+          <div>
+            <!-- Log a Hike button -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;" class="reveal">
+              <h2 style="font-size:1.15rem; color:var(--green-dark); margin:0;">Recent Hikes</h2>
+              <button class="btn-log" id="btn-open-log" aria-haspopup="dialog">
+                ➕ Log a Hike
+              </button>
+            </div>
+
+            <!-- Hike table -->
+            <div class="panel reveal">
+              <div id="hike-log-wrap">
+                <div class="empty-state" id="empty-log">
+                  <div class="empty-icon">🌿</div>
+                  <p>No hikes logged yet.<br>Click <strong>Log a Hike</strong> to record your first adventure!</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recommender (shows on left on mobile) -->
+            <div id="rec-section-mobile" class="reveal" style="display:none;"></div>
+          </div>
+
+          <!-- RIGHT: Badges + Recommender -->
+          <div>
+
+            <!-- Smart Recommender -->
+            <div class="panel reveal" id="rec-panel">
+              <div class="panel-header">
+                <h3>✨ Recommended Next Trail</h3>
+              </div>
+              <div class="panel-body" id="rec-body">
+                <div class="rec-empty">Log your first hike to unlock personalised trail recommendations!</div>
+              </div>
+            </div>
+
+            <!-- Badges -->
+            <div class="panel reveal">
+              <div class="panel-header">
+                <h3>🏅 Achievement Badges</h3>
+              </div>
+              <div class="panel-body">
+                <div class="badge-grid" id="badge-grid">
+                  <!-- Injected by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick stats panel -->
+            <div class="panel reveal">
+              <div class="panel-header"><h3>📊 Trail Breakdown</h3></div>
+              <div class="panel-body" id="breakdown-body">
+                <p style="font-size:.85rem; color:var(--gray); font-style:italic;">Log hikes to see your trail type breakdown.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Log a Hike Modal ─────────────────────────────── -->
+  <!--
+    FEATURE: Log a Hike Modal
+    Opens when user clicks "+ Log a Hike"
+    Collects: trail name, date, distance (km), duration,
+              star rating, optional notes
+    Validates all required fields client-side before saving
+    Stores entry as JSON in localStorage array 'trailJournal'
+  -->
+  <div class="j-modal-overlay" id="log-modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+    <div class="j-modal">
+      <div class="j-modal-head">
+        <h3 id="modal-heading">Log a Hike</h3>
+        <button class="j-modal-close" id="modal-close-btn" aria-label="Close">&#10005;</button>
+      </div>
+      <div class="j-modal-body">
+
+        <div class="j-form-row">
+          <div>
+            <label class="j-label" for="log-trail">Trail Name <span class="required">*</span></label>
+            <!-- Datalist gives quick suggestions from known trails -->
+            <input type="text" id="log-trail" class="j-input"
+                   placeholder="e.g. Coastal Walk" list="trail-suggestions" autocomplete="off">
+            <datalist id="trail-suggestions">
+              <option value="Coastal Walk">
+              <option value="River Loop">
+              <option value="Forest Track">
+              <option value="Mountain Pass">
+              <option value="Valley Circuit">
+              <option value="Waterfall Walk">
+            </datalist>
+            <p class="j-err" id="err-trail">Please enter the trail name.</p>
+          </div>
+          <div>
+            <label class="j-label" for="log-date">Date Hiked <span class="required">*</span></label>
+            <input type="date" id="log-date" class="j-input">
+            <p class="j-err" id="err-date">Please select a date.</p>
+          </div>
+        </div>
+
+        <div class="j-form-row">
+          <div>
+            <label class="j-label" for="log-dist">Distance (km) <span class="required">*</span></label>
+            <input type="number" id="log-dist" class="j-input"
+                   placeholder="e.g. 5.2" min="0.1" max="200" step="0.1">
+            <p class="j-err" id="err-dist">Enter a valid distance (0.1–200 km).</p>
+          </div>
+          <div>
+            <label class="j-label" for="log-dur">Duration</label>
+            <input type="text" id="log-dur" class="j-input"
+                   placeholder="e.g. 1h 45m">
+          </div>
+        </div>
+
+        <div style="margin-bottom:.9rem;">
+          <label class="j-label">Rating <span class="required">*</span></label>
+          <!--
+            FEATURE: Interactive star picker
+            Uses data-val attributes + mouseenter/click events
+            Stores selected value in hidden input #log-rating
+            All numeric comparisons use parseInt() to avoid
+            string-comparison bugs (the spaces-in-IDs lesson!)
+          -->
+          <div class="star-pick" id="log-stars" role="group" aria-label="Star rating">
+            <span data-val="1" title="1 star">★</span>
+            <span data-val="2" title="2 stars">★</span>
+            <span data-val="3" title="3 stars">★</span>
+            <span data-val="4" title="4 stars">★</span>
+            <span data-val="5" title="5 stars">★</span>
+          </div>
+          <input type="hidden" id="log-rating" value="0">
+          <p class="j-err" id="err-rating">Please select a star rating.</p>
+        </div>
+
+        <div class="j-form-row full" style="margin-bottom:.5rem;">
+          <div>
+            <label class="j-label" for="log-notes">Notes (optional)</label>
+            <textarea id="log-notes" class="j-input" rows="2"
+                      placeholder="Highlights, conditions, who you hiked with…"
+                      maxlength="400" style="resize:vertical;"></textarea>
+          </div>
+        </div>
+
+        <div class="j-modal-actions">
+          <button class="btn-cancel" id="modal-cancel-btn" type="button">Cancel</button>
+          <button class="btn-save"   id="modal-save-btn"   type="button">💾 Save Hike</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Badge unlock toast notification ──────────────── -->
+  <div class="toast" id="badge-toast" role="status" aria-live="polite"></div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a><a href="routes.html">Routes</a>
+      <a href="gear.html">Gear</a><a href="stories.html">Stories</a>
+      <a href="membership.html">Membership</a>
+      <a href="journal.html">Journal</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <p>&copy; 2026 River Trail Adventures &nbsp;|&nbsp; Last updated: May 2026 &nbsp;|&nbsp;
+       <a href="mailto:info@rivertrail.com.au">info@rivertrail.com.au</a></p>
+  </footer>
+  <button id="back-to-top" aria-label="Back to top">&#8679;</button>
+
+  <script src="main.js"></script>
+  <script>
+
+  // ── 1. CONSTANTS ───────────────────────────────────────────
+
+  const LS_KEY = 'rivertrail_journal_v1'; // localStorage key
+
+  /*
+   * TRAIL DATA CATALOGUE
+   * Used by the Recommender to score trails.
+   * difficulty maps to a numeric level (1=easy,2=moderate,3=hard)
+   * for weighted comparison against the user's logged history.
+   */
+  const TRAIL_CATALOGUE = [
+    { name:'Coastal Walk',   difficulty:1, km:5.2,  label:'Easy'    },
+    { name:'River Loop',     difficulty:1, km:4.3,  label:'Easy'    },
+    { name:'Forest Track',   difficulty:2, km:6.0,  label:'Moderate'},
+    { name:'Valley Circuit', difficulty:2, km:8.5,  label:'Moderate'},
+    { name:'Mountain Pass',  difficulty:3, km:14.2, label:'Hard'    },
+    { name:'Waterfall Walk', difficulty:1, km:3.1,  label:'Easy'    },
+  ];
+
+  /*
+   * BADGE DEFINITIONS
+   * Each badge has:
+   *   id       — unique string key stored in localStorage
+   *   icon     — emoji displayed in badge shelf
+   *   name     — short label
+   *   desc     — what earns it
+   *   check(stats) — pure function returning true when earned
+   */
+  const BADGES = [
+    {
+      id: 'first_hike',
+      icon: '🌱', name: 'First Step',
+      desc: 'Log your first hike',
+      check: s => s.totalHikes >= 1
+    },
+    {
+      id: 'five_hikes',
+      icon: '🥾', name: 'Trail Walker',
+      desc: 'Complete 5 hikes',
+      check: s => s.totalHikes >= 5
+    },
+    {
+      id: 'ten_hikes',
+      icon: '🏃', name: 'Trail Runner',
+      desc: 'Complete 10 hikes',
+      check: s => s.totalHikes >= 10
+    },
+    {
+      id: 'km_25',
+      icon: '📏', name: '25 km Club',
+      desc: 'Walk 25 km total',
+      check: s => s.totalKm >= 25
+    },
+    {
+      id: 'km_50',
+      icon: '⭐', name: '50 km Club',
+      desc: 'Walk 50 km total',
+      check: s => s.totalKm >= 50
+    },
+    {
+      id: 'km_100',
+      icon: '🏆', name: '100 km Legend',
+      desc: 'Walk 100 km total',
+      check: s => s.totalKm >= 100
+    },
+    {
+      id: 'streak_2',
+      icon: '🔥', name: 'On Fire',
+      desc: 'Hike 2 weeks in a row',
+      check: s => s.streak >= 2
+    },
+    {
+      id: 'hard_trail',
+      icon: '🏔️', name: 'Summit Chaser',
+      desc: 'Complete a Hard trail',
+      check: s => s.hasHard
+    },
+    {
+      id: 'all_diff',
+      icon: '🌈', name: 'All-Rounder',
+      desc: 'Complete Easy, Moderate & Hard',
+      check: s => s.hasEasy && s.hasModerate && s.hasHard
+    },
+  ];
+
+  // ── 2. JOURNAL STORE ───────────────────────────────────────
+
+  /*
+   * JournalStore — thin wrapper around localStorage.
+   * All reads and writes go through this object so the
+   * storage key is only defined in one place.
+   */
+  const JournalStore = {
+    load()  { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); },
+    save(d) { localStorage.setItem(LS_KEY, JSON.stringify(d)); },
+    add(entry) {
+      const d = this.load();
+      entry.id = Date.now();                 // unique numeric ID
+      entry.loggedAt = new Date().toISOString();
+      d.unshift(entry);                      // newest first
+      this.save(d);
+      return d;
+    },
+    remove(id) {
+      const d = this.load().filter(e => e.id !== id);
+      this.save(d); return d;
+    }
+  };
+
+  // ── 3. STATS CALCULATOR ────────────────────────────────────
+
+  /*
+   * calculateStats(entries) — derives all aggregate metrics
+   * from the raw hike log array.
+   *
+   * Streak logic: counts consecutive calendar weeks
+   * (Mon–Sun) in which at least one hike was logged.
+   * A week is represented as an ISO week string YYYY-Www.
+   */
+  function calculateStats(entries) {
+    const totalHikes = entries.length;
+    const totalKm    = entries.reduce((s, e) => s + (parseFloat(e.km) || 0), 0);
+
+    // Difficulty breakdown — map known trails to difficulty level
+    const diffMap = {};
+    TRAIL_CATALOGUE.forEach(t => { diffMap[t.name.toLowerCase()] = t.difficulty; });
+
+    let hasEasy=false, hasModerate=false, hasHard=false;
+    entries.forEach(e => {
+      const d = diffMap[e.trail.toLowerCase()];
+      if (d===1) hasEasy=true;
+      if (d===2) hasModerate=true;
+      if (d===3) hasHard=true;
+    });
+
+    // Week streak — sort dates, find consecutive ISO weeks
+    const weeks = [...new Set(
+      entries
+        .map(e => e.date)
+        .filter(Boolean)
+        .sort()
+        .reverse()
+        .map(d => isoWeek(d))
+    )];
+
+    let streak = 0;
+    if (weeks.length > 0) {
+      streak = 1;
+      for (let i=1; i<weeks.length; i++) {
+        if (weekDiff(weeks[i-1], weeks[i]) === 1) streak++;
+        else break;
+      }
+    }
+
+    return { totalHikes, totalKm: Math.round(totalKm * 10) / 10,
+             hasEasy, hasModerate, hasHard, streak };
+  }
+
+  /*
+   * isoWeek(dateStr) — converts "2026-05-19" to "2026-W21"
+   * Uses the ISO 8601 week number algorithm.
+   */
+  function isoWeek(dateStr) {
+    const d = new Date(dateStr);
+    d.setHours(0,0,0,0);
+    d.setDate(d.getDate() + 3 - (d.getDay()+6)%7);
+    const week1 = new Date(d.getFullYear(), 0, 4);
+    const wk = 1 + Math.round(((d-week1)/86400000 - 3 + (week1.getDay()+6)%7)/7);
+    return `${d.getFullYear()}-W${String(wk).padStart(2,'0')}`;
+  }
+
+  /*
+   * weekDiff(a, b) — number of weeks between two ISO week strings.
+   * e.g. weekDiff("2026-W21", "2026-W20") === 1
+   */
+  function weekDiff(a, b) {
+    const parse = s => {
+      const [yr, wk] = s.split('-W').map(Number);
+      const d = new Date(yr, 0, 1 + (wk-1)*7);
+      d.setDate(d.getDate() + (1 - d.getDay())); // Monday
+      return d;
+    };
+    return Math.round((parse(a) - parse(b)) / 604800000); // ms in a week
+  }
+
+  // ── 4. BADGE ENGINE ────────────────────────────────────────
+
+  /*
+   * BadgeEngine.evaluate(stats, entries) — returns array of
+   * badge IDs that are now earned. Compares against previously
+   * earned badges to detect newly-unlocked badges for toasting.
+   */
+  const BadgeEngine = {
+    loadEarned() { return JSON.parse(localStorage.getItem('rta_badges_v1') || '[]'); },
+    saveEarned(ids) { localStorage.setItem('rta_badges_v1', JSON.stringify(ids)); },
+    evaluate(stats) {
+      const prev    = new Set(this.loadEarned());
+      const current = BADGES.filter(b => b.check(stats)).map(b => b.id);
+      const newly   = current.filter(id => !prev.has(id));
+      this.saveEarned(current);
+      return { earned: new Set(current), newly };
+    }
+  };
+
+  // ── 5. SMART TRAIL RECOMMENDER ────────────────────────────
+
+  /*
+   * Recommender.score(entries) — analyses the user's hike history
+   * and returns a ranked array of trail recommendations.
+   *
+   * Scoring algorithm (0–100):
+   *   +35  if difficulty matches user's preferred difficulty
+   *   +20  if difficulty is one step harder (stretch goal bonus)
+   *   +25  if distance is within ±1 km of user's average distance
+   *   +15  if distance is within ±3 km of user's average distance
+   *   +20  if trail has NOT been completed before
+   *   -50  if trail is identical to the most recent hike (avoid repeats)
+   *
+   * preferredDifficulty is determined by the most-frequent
+   * difficulty in completed hikes, with a bias toward harder
+   * trails as the user accumulates more hikes.
+   */
+  const Recommender = {
+    score(entries) {
+      if (!entries.length) return [];
+
+      // Average distance
+      const avgKm = entries.reduce((s,e)=>s+(parseFloat(e.km)||0),0) / entries.length;
+
+      // Preferred difficulty: mode of logged trails
+      const diffCount = {1:0, 2:0, 3:0};
+      const diffMap   = {};
+      TRAIL_CATALOGUE.forEach(t => { diffMap[t.name.toLowerCase()] = t.difficulty; });
+      entries.forEach(e => {
+        const d = diffMap[e.trail.toLowerCase()] || 1;
+        diffCount[d] = (diffCount[d]||0) + 1;
+      });
+      const prefDiff = parseInt(Object.entries(diffCount).sort((a,b)=>b[1]-a[1])[0][0]);
+
+      // Completed trail names (lower-cased for comparison)
+      const completed  = new Set(entries.map(e => e.trail.toLowerCase()));
+      const lastTrail  = entries[0]?.trail?.toLowerCase() || '';
+
+      return TRAIL_CATALOGUE.map(trail => {
+        let score = 0;
+        const distDiff = Math.abs(trail.km - avgKm);
+
+        // Difficulty match
+        if (trail.difficulty === prefDiff)        score += 35;
+        else if (trail.difficulty === prefDiff+1) score += 20;  // stretch
+
+        // Distance match
+        if (distDiff <= 1)      score += 25;
+        else if (distDiff <= 3) score += 15;
+
+        // Not completed yet
+        if (!completed.has(trail.name.toLowerCase())) score += 20;
+
+        // Penalise most recent trail
+        if (trail.name.toLowerCase() === lastTrail) score -= 50;
+
+        // Build reason string
+        let reason = [];
+        if (trail.difficulty === prefDiff)        reason.push('matches your usual difficulty');
+        if (trail.difficulty === prefDiff+1)      reason.push('one step harder — good challenge');
+        if (!completed.has(trail.name.toLowerCase())) reason.push('new trail for you');
+        if (distDiff <= 1) reason.push('similar distance to your average');
+
+        return { ...trail, score, reason: reason.join(' · ') || 'based on your history' };
+      })
+      .filter(t => t.score > 0)
+      .sort((a,b) => b.score - a.score);
+    }
+  };
+
+  // ── 6. RENDER FUNCTIONS ────────────────────────────────────
+
+  /* Animated counter for stat cards */
+  function animateCounter(el, target, isFloat) {
+    const start = 0;
+    const dur   = 700;
+    const begin = performance.now();
+    function step(now) {
+      const t   = Math.min((now-begin)/dur, 1);
+      const val = start + (target-start) * (1-(1-t)**3);
+      el.textContent = isFloat ? val.toFixed(1) : Math.round(val);
+      el.classList.add('animate');
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* Render stat cards */
+  function renderStats(stats) {
+    animateCounter(document.getElementById('stat-hikes'),  stats.totalHikes, false);
+    animateCounter(document.getElementById('stat-km'),     stats.totalKm,    true);
+    animateCounter(document.getElementById('stat-streak'), stats.streak,     false);
+
+    // Progress bar (towards 100 km)
+    const pct = Math.min(100, Math.round((stats.totalKm / 100) * 100));
+    document.getElementById('prog-fill').style.width  = pct + '%';
+    document.getElementById('prog-pct').textContent   = pct + '%';
+    document.getElementById('prog-label').textContent =
+      `${stats.totalKm} km walked towards the 100 km milestone`;
+  }
+
+  /* Render badges */
+  function renderBadges(earned) {
+    const grid  = document.getElementById('badge-grid');
+    const count = [...earned].length;
+    animateCounter(document.getElementById('stat-badges'), count, false);
+
+    grid.innerHTML = BADGES.map(b => {
+      const isEarned = earned.has(b.id);
+      return `<div class="badge-item ${isEarned?'earned':'locked'}" title="${b.desc}">
+        <span class="badge-icon">${b.icon}</span>
+        <div class="badge-name">${b.name}</div>
+        <div class="badge-desc">${b.desc}</div>
+      </div>`;
+    }).join('');
+  }
+
+  /* Render hike log table */
+  function renderHikeLog(entries) {
+    const wrap = document.getElementById('hike-log-wrap');
+    const empty = document.getElementById('empty-log');
+
+    if (!entries.length) {
+      wrap.innerHTML = `<div class="empty-state" id="empty-log">
+        <div class="empty-icon">🌿</div>
+        <p>No hikes logged yet.<br>Click <strong>Log a Hike</strong> to record your first adventure!</p>
+      </div>`;
+      return;
+    }
+
+    const rows = entries.map(e =>
+      `<tr>
+        <td><strong>${esc(e.trail)}</strong></td>
+        <td>${esc(e.date)}</td>
+        <td>${parseFloat(e.km).toFixed(1)} km</td>
+        <td>${esc(e.duration||'—')}</td>
+        <td><span class="hike-stars">${'★'.repeat(e.rating)}${'☆'.repeat(5-e.rating)}</span></td>
+        <td>
+          <button class="hike-del" onclick="deleteHike(${e.id})" title="Delete hike" aria-label="Delete ${esc(e.trail)}">✕</button>
+        </td>
+      </tr>`
+    ).join('');
+
+    wrap.innerHTML = `<div style="overflow-x:auto">
+      <table class="hike-table">
+        <thead><tr>
+          <th>Trail</th><th>Date</th><th>Distance</th>
+          <th>Duration</th><th>Rating</th><th></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  /* Render smart recommender */
+  function renderRecommender(entries) {
+    const body = document.getElementById('rec-body');
+    const recs  = Recommender.score(entries);
+
+    if (!recs.length) {
+      body.innerHTML = `<div class="rec-empty">Log your first hike to unlock personalised trail recommendations!</div>`;
+      return;
+    }
+
+    const top = recs[0];
+    const pct = Math.min(99, Math.round(top.score));
+
+    body.innerHTML = `
+      <div class="rec-card">
+        <h4>✨ Based on your ${entries.length} hike${entries.length>1?'s':''}</h4>
+        <div class="rec-trail-name">${esc(top.name)}</div>
+        <div class="rec-meta">${top.label}  ·  ${top.km} km</div>
+        <span class="rec-match">${pct}% match</span>
+        <div class="rec-reason">${esc(top.reason)}</div>
+        <a href="routes.html" class="btn-outline-trail" style="display:inline-block; margin-top:.9rem; font-size:.85rem;">
+          View Route →
+        </a>
+      </div>
+      ${recs.slice(1,3).map(r=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;
+                    padding:.5rem .6rem; border-radius:7px; background:var(--light-gray);
+                    margin-bottom:.4rem; font-size:.83rem;">
+          <span style="font-weight:600; color:var(--green-dark);">${esc(r.name)}</span>
+          <span style="color:var(--gray);">${r.label} · ${r.km} km</span>
+          <span style="color:var(--green-light); font-weight:700;">${Math.min(99,Math.round(r.score))}%</span>
+        </div>`).join('')}
+    `;
+  }
+
+  /* Render trail breakdown */
+  function renderBreakdown(entries) {
+    const body = document.getElementById('breakdown-body');
+    if (!entries.length) {
+      body.innerHTML = `<p style="font-size:.85rem; color:var(--gray); font-style:italic;">Log hikes to see your trail type breakdown.</p>`;
+      return;
+    }
+    const counts = {};
+    entries.forEach(e => { counts[e.trail] = (counts[e.trail]||0)+1; });
+    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    const maxCount = sorted[0][1];
+    body.innerHTML = sorted.map(([trail, cnt]) =>
+      `<div style="margin-bottom:.6rem;">
+        <div style="display:flex; justify-content:space-between; font-size:.82rem; margin-bottom:.2rem;">
+          <span style="font-weight:600;">${esc(trail)}</span>
+          <span style="color:var(--gray);">${cnt} hike${cnt>1?'s':''}</span>
+        </div>
+        <div style="height:7px; background:#e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="height:100%; width:${Math.round(cnt/maxCount*100)}%;
+                      background:var(--green-light); border-radius:10px;
+                      transition:width .8s ease;"></div>
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  /* Toast notification for badge unlock */
+  function showToast(msg) {
+    const t = document.getElementById('badge-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  /* XSS-safe escape */
+  function esc(s) {
+    return String(s||'')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── 7. FULL REFRESH ────────────────────────────────────────
+
+  /*
+   * refresh() — the single source of truth.
+   * Called after every data change (add, delete).
+   * Reads from localStorage → recalculates → re-renders all UI.
+   */
+  function refresh(newlyEarned) {
+    const entries = JournalStore.load();
+    const stats   = calculateStats(entries);
+    const { earned, newly } = newlyEarned
+      ? { earned: BadgeEngine.evaluate(stats).earned, newly: newlyEarned }
+      : BadgeEngine.evaluate(stats);
+
+    renderStats(stats);
+    renderHikeLog(entries);
+    renderBadges(earned);
+    renderRecommender(entries);
+    renderBreakdown(entries);
+
+    // Update hero subtitle with personalised message
+    if (entries.length > 0) {
+      document.getElementById('hero-subtitle').textContent =
+        `${entries.length} hike${entries.length>1?'s':''} logged · ${stats.totalKm} km walked · Keep exploring!`;
+    }
+
+    // Toast newly earned badges
+    if (newly && newly.length) {
+      newly.forEach((id, i) => {
+        const b = BADGES.find(x => x.id===id);
+        if (b) setTimeout(() => showToast(`🏅 Badge unlocked: ${b.name}!`), i*1200);
+      });
+    }
+  }
+
+  // ── 8. DELETE HIKE ─────────────────────────────────────────
+  function deleteHike(id) {
+    if (!confirm('Remove this hike from your journal?')) return;
+    JournalStore.remove(id);
+    refresh();
+  }
+
+  // ── 9. MODAL LOGIC ─────────────────────────────────────────
+
+  /* Star picker interaction */
+  let selectedRating = 0;
+  const starsEl   = document.getElementById('log-stars');
+  const starSpans = starsEl.querySelectorAll('span');
+
+  starSpans.forEach(star => {
+    star.addEventListener('mouseenter', () => {
+      starSpans.forEach(s =>
+        s.classList.toggle('lit', parseInt(s.dataset.val) <= parseInt(star.dataset.val))
+      );
+    });
+    star.addEventListener('mouseleave', () => {
+      starSpans.forEach(s =>
+        s.classList.toggle('lit', parseInt(s.dataset.val) <= selectedRating)
+      );
+    });
+    star.addEventListener('click', () => {
+      selectedRating = parseInt(star.dataset.val);
+      document.getElementById('log-rating').value = selectedRating;
+      starSpans.forEach(s =>
+        s.classList.toggle('lit', parseInt(s.dataset.val) <= selectedRating)
+      );
+    });
+  });
+
+  /* Open / close modal */
+  function openModal() {
+    // Set today's date as default
+    document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('log-modal').classList.add('open');
+    document.getElementById('log-trail').focus();
+  }
+  function closeModal() {
+    document.getElementById('log-modal').classList.remove('open');
+    // Reset form
+    ['log-trail','log-dist','log-dur','log-notes'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('log-rating').value = '0';
+    selectedRating = 0;
+    starSpans.forEach(s => s.classList.remove('lit'));
+    ['err-trail','err-date','err-dist','err-rating'].forEach(id => {
+      document.getElementById(id).style.display='none';
+    });
+    ['log-trail','log-dist','log-date'].forEach(id =>
+      document.getElementById(id).classList.remove('err')
+    );
+  }
+
+  document.getElementById('btn-open-log').addEventListener('click', openModal);
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+  document.getElementById('log-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('log-modal')) closeModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key==='Escape') closeModal();
+  });
+
+  /* ── Save hike ─────────────────────────────────────────── */
+  document.getElementById('modal-save-btn').addEventListener('click', () => {
+    const trail  = document.getElementById('log-trail').value.trim();
+    const date   = document.getElementById('log-date').value;
+    const dist   = parseFloat(document.getElementById('log-dist').value);
+    const dur    = document.getElementById('log-dur').value.trim();
+    const notes  = document.getElementById('log-notes').value.trim();
+    const rating = parseInt(document.getElementById('log-rating').value);
+
+    // Client-side validation
+    let valid = true;
+    const show = (errId, inputId) => {
+      document.getElementById(errId).style.display='block';
+      if (inputId) document.getElementById(inputId).classList.add('err');
+      valid = false;
+    };
+    const hide = (errId, inputId) => {
+      document.getElementById(errId).style.display='none';
+      if (inputId) document.getElementById(inputId).classList.remove('err');
+    };
+
+    trail ? hide('err-trail','log-trail') : show('err-trail','log-trail');
+    date  ? hide('err-date', 'log-date')  : show('err-date', 'log-date');
+    (!isNaN(dist) && dist>=0.1 && dist<=200) ? hide('err-dist','log-dist') : show('err-dist','log-dist');
+    rating>0 ? hide('err-rating',null) : show('err-rating',null);
+
+    if (!valid) return;
+
+    // Build entry object
+    const entry = { trail, date, km: dist, duration: dur||'—', rating, notes };
+
+    // Save and refresh
+    JournalStore.add(entry);
+
+    // Evaluate badges AFTER adding
+    const newEntries = JournalStore.load();
+    const newStats   = calculateStats(newEntries);
+    const { newly }  = BadgeEngine.evaluate(newStats);
+
+    closeModal();
+    refresh();
+
+    // Fire toasts for newly earned badges
+    if (newly.length) {
+      newly.forEach((id, i) => {
+        const b = BADGES.find(x=>x.id===id);
+        if (b) setTimeout(()=>showToast(`🏅 Badge unlocked: ${b.name}!`), 800 + i*1200);
+      });
+    }
+  });
+
+  // ── 10. INITIALISE ─────────────────────────────────────────
+  // Load and render on page load
+  refresh();
+  </script>
+</body>
+</html>

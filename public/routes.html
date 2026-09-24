@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="River Trail Adventures – Browse and filter all hiking routes.">
+  <title>River Trail Adventures | Routes</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Review styles ──────────────────────────────── */
+    .review-section { margin-top:1.6rem; border-top:2px solid var(--border); padding-top:1.4rem; }
+    .review-section h4 { font-size:1rem; color:var(--green-dark); margin-bottom:.8rem; }
+    .avg-rating { display:flex; align-items:center; gap:.5rem; margin-bottom:1rem; }
+    .avg-stars { color:#f59e0b; font-size:1.1rem; letter-spacing:1px; }
+    .avg-label { font-size:.85rem; color:var(--gray); }
+    .review-item {
+      background:var(--light-gray); border-radius:7px;
+      padding:.7rem .9rem; margin-bottom:.6rem; font-size:.88rem;
+    }
+    .review-item .r-head { display:flex; justify-content:space-between; margin-bottom:.25rem; }
+    .review-item .r-name { font-weight:600; color:var(--green-dark); }
+    .review-item .r-stars { color:#f59e0b; letter-spacing:1px; }
+    .review-item .r-date { font-size:.76rem; color:var(--gray); }
+    .review-item .r-text { color:var(--dark); line-height:1.5; }
+    .review-form { background:var(--cream); border:1px solid #e0d5c5; border-radius:8px; padding:1rem; margin-top:1rem; }
+    .review-form label { font-size:.85rem; font-weight:600; display:block; margin-bottom:.25rem; }
+    .review-form input, .review-form textarea {
+      width:100%; padding:.4rem .7rem; border:1px solid var(--border);
+      border-radius:5px; font-family:inherit; font-size:.88rem; margin-bottom:.6rem;
+    }
+    .review-form input:focus, .review-form textarea:focus { border-color:var(--green-mid); outline:none; }
+    .star-input { display:flex; gap:.25rem; margin-bottom:.8rem; }
+    .star-input span {
+      font-size:1.6rem; cursor:pointer; color:#d1d5db; transition:color .15s; user-select:none;
+    }
+    .star-input span.active, .star-input span:hover { color:#f59e0b; }
+    .review-submit-btn {
+      background:var(--green-light); color:#fff; border:none; border-radius:6px;
+      padding:.45rem 1.2rem; font-size:.9rem; font-weight:600; cursor:pointer; transition:background .2s;
+    }
+    .review-submit-btn:hover { background:var(--green-dark); }
+    .review-err { color:#dc2626; font-size:.83rem; margin-top:.4rem; }
+    .review-ok  { color:var(--green-dark); font-size:.85rem; margin-top:.4rem; font-weight:600; }
+    .rev-more-btn {
+      background:none; border:none; color:var(--green-dark); cursor:pointer;
+      font-size:.84rem; font-weight:600; padding:0; margin-top:.4rem; text-decoration:underline;
+    }
+    .filter-btn { padding:.45rem 1.2rem; border-radius:20px; border:2px solid var(--border);
+      background:var(--white); font-size:.88rem; font-weight:600; cursor:pointer; transition:all .2s; }
+    .filter-btn:hover, .filter-btn.active { background:var(--green-light); border-color:var(--green-light); color:#fff; }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="greeting-banner" aria-live="polite"></div>
+
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem;">
+      <a class="navbar-brand" href="index.html">🥾 River Trail</a>
+      <button class="navbar-toggler" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <ul class="navbar-nav" id="navMenu" style="display:flex; list-style:none; gap:.2rem; flex-wrap:wrap;">
+        <li><a class="nav-link" href="index.html">Home</a></li>
+        <li><a class="nav-link active" href="routes.html" aria-current="page">Routes</a></li>
+        <li><a class="nav-link" href="gear.html">Gear</a></li>
+        <li><a class="nav-link" href="stories.html">Stories</a></li>
+        <li><a class="nav-link" href="membership.html">Membership</a></li>
+        <li><a class="nav-link" href="journal.html">📋 Journal</a></li>
+        <li><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section class="section-pad">
+      <div class="container">
+        <div class="section-heading reveal">
+          <h1>Our Hiking Routes</h1>
+          <p>Choose your next adventure – filter by difficulty or search by name</p>
+        </div>
+
+        <!-- Search -->
+        <div class="search-wrap reveal">
+          <label for="trail-search" style="position:absolute;clip:rect(0,0,0,0);">Search trails</label>
+          <input type="text" id="trail-search" class="form-control"
+                 placeholder="Search trails (e.g. coastal, river, forest)"
+                 aria-label="Search trails" style="border-radius:6px 0 0 6px;">
+          <button id="trail-search-btn" type="button">Search</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="text-center reveal" style="margin-bottom:2rem; display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap;">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="easy">Easy</button>
+          <button class="filter-btn" data-filter="moderate">Moderate</button>
+          <button class="filter-btn" data-filter="hard">Hard</button>
+        </div>
+
+        <p id="no-results" style="display:none; text-align:center; color:var(--gray); font-style:italic; margin-bottom:1.5rem;">
+          No trails found matching your search.
+        </p>
+
+        <!--
+          SMART RECOMMENDER BANNER (Task 10.3HD)
+          Reads hike history from localStorage (same key as journal.html)
+          Shows personalised top-2 recommendations if hikes are logged.
+          Hidden entirely if no journal data exists — zero disruption to
+          users who haven't used the Journal feature.
+        -->
+        <div id="rec-banner" style="display:none; margin-bottom:2rem;" class="reveal">
+          <div style="background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);
+                      border:1.5px solid #93c5fd; border-radius:12px; padding:1.2rem 1.5rem;">
+            <div style="display:flex; align-items:center; gap:.7rem; margin-bottom:.6rem;">
+              <span style="font-size:1.3rem;">✨</span>
+              <strong id="rec-banner-title" style="color:#1e40af; font-size:1rem;">
+                Based on your trail journal
+              </strong>
+            </div>
+            <div id="rec-banner-pills" style="display:flex; flex-wrap:wrap; gap:.6rem;"></div>
+            <a href="journal.html" style="font-size:.8rem; color:#2563eb; display:inline-block; margin-top:.7rem; text-decoration:underline;">
+              Open My Trail Journal →
+            </a>
+          </div>
+        </div>
+
+        <!-- Trail cards -->
+        <div class="row g-4" id="trail-grid">
+
+          <!-- ── Coastal Walk ── -->
+          <div class="col-4 trail-item reveal" data-difficulty="easy" data-name="coastal walk">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600" alt="Coastal Walk – ocean cliff path">
+              <div class="card-body">
+                <h5>Coastal Walk</h5>
+                <p>A gentle stroll along dramatic sea cliffs with sweeping ocean views.</p>
+                <p><span class="badge-easy">Easy</span> &nbsp; 5.2 km &nbsp;·&nbsp; ~1.5 hrs</p>
+                <button class="btn-outline-trail view-details-btn" style="margin-top:.6rem;"
+                  data-title="Coastal Walk" data-difficulty="Easy" data-distance="5.2 km" data-time="~1.5 hrs"
+                  data-description="This beautiful coastal trail follows the clifftops south of Melbourne. Start early to catch the sunrise over the water. Dogs welcome on a lead."
+                  data-img="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700">View Details</button>
+                <!-- Reviews section injected by JS -->
+                <div class="review-section" id="reviews-Coastal-Walk"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── River Loop ── -->
+          <div class="col-4 trail-item reveal" data-difficulty="easy" data-name="river loop">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=600" alt="River Loop – hiker on mountain river">
+              <div class="card-body">
+                <h5>River Loop</h5>
+                <p>A relaxing loop along a winding riverbank through ancient eucalyptus.</p>
+                <p><span class="badge-easy">Easy</span> &nbsp; 4.3 km &nbsp;·&nbsp; ~1 hr</p>
+                <button class="btn-outline-trail view-details-btn" style="margin-top:.6rem;"
+                  data-title="River Loop" data-difficulty="Easy" data-distance="4.3 km" data-time="~1 hr"
+                  data-description="Follow the river's edge through tall gum trees. Wildlife sightings are common – keep an eye out for platypus at dawn and dusk."
+                  data-img="https://images.unsplash.com/photo-1551632811-561732d1e306?w=700">View Details</button>
+                <div class="review-section" id="reviews-River-Loop"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Forest Track ── -->
+          <div class="col-4 trail-item reveal" data-difficulty="moderate" data-name="forest track">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600" alt="Forest Track – green canopy trail">
+              <div class="card-body">
+                <h5>Forest Track</h5>
+                <p>A rewarding climb through dense rainforest with panoramic mountain views.</p>
+                <p><span class="badge-moderate">Moderate</span> &nbsp; 6.0 km &nbsp;·&nbsp; ~2.5 hrs</p>
+                <button class="btn-outline-trail view-details-btn" style="margin-top:.6rem;"
+                  data-title="Forest Track" data-difficulty="Moderate" data-distance="6.0 km" data-time="~2.5 hrs"
+                  data-description="The Forest Track winds through cool-temperate rainforest before breaking onto an exposed ridge with spectacular views. Trekking poles recommended."
+                  data-img="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=700">View Details</button>
+                <div class="review-section" id="reviews-Forest-Track"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Mountain Pass ── -->
+          <div class="col-4 trail-item reveal" data-difficulty="hard" data-name="mountain pass">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600" alt="Mountain Pass – rocky alpine terrain">
+              <div class="card-body">
+                <h5>Mountain Pass</h5>
+                <p>A strenuous high-alpine route crossing exposed ridges with breathtaking views.</p>
+                <p><span class="badge-hard">Hard</span> &nbsp; 14.2 km &nbsp;·&nbsp; ~6 hrs</p>
+                <button class="btn-outline-trail view-details-btn" style="margin-top:.6rem;"
+                  data-title="Mountain Pass" data-difficulty="Hard" data-distance="14.2 km" data-time="~6 hrs"
+                  data-description="Only for experienced hikers. Above 1,800m and subject to sudden weather changes. Navigation skills required. Always check forecast before departing."
+                  data-img="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=700">View Details</button>
+                <div class="review-section" id="reviews-Mountain-Pass"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Valley Circuit ── -->
+          <div class="col-4 trail-item reveal" data-difficulty="moderate" data-name="valley circuit">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1487730116645-74489c95b41b?w=600" alt="Valley Circuit – green valley path">
+              <div class="card-body">
+                <h5>Valley Circuit</h5>
+                <p>A scenic loop through a lush valley with wildflowers in spring.</p>
+                <p><span class="badge-moderate">Moderate</span> &nbsp; 8.5 km &nbsp;·&nbsp; ~3 hrs</p>
+                <button class="btn-outline-trail view-details-btn" style="margin-top:.6rem;"
+                  data-title="Valley Circuit" data-difficulty="Moderate" data-distance="8.5 km" data-time="~3 hrs"
+                  data-description="Best visited in spring when wildflowers are in full bloom. The trail descends into the valley floor before climbing back through open woodland."
+                  data-img="https://images.unsplash.com/photo-1487730116645-74489c95b41b?w=700">View Details</button>
+                <div class="review-section" id="reviews-Valley-Circuit"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Waterfall Walk ── -->
+          <div class="col-4 trail-item reveal" data-difficulty="easy" data-name="waterfall walk">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=600" alt="Waterfall Walk – waterfall in rainforest">
+              <div class="card-body">
+                <h5>Waterfall Walk</h5>
+                <p>An easy family-friendly walk to a stunning 25m waterfall.</p>
+                <p><span class="badge-easy">Easy</span> &nbsp; 3.1 km &nbsp;·&nbsp; ~1 hr</p>
+                <button class="btn-outline-trail view-details-btn" style="margin-top:.6rem;"
+                  data-title="Waterfall Walk" data-difficulty="Easy" data-distance="3.1 km" data-time="~1 hr"
+                  data-description="Follow the creek upstream through beautiful fern gullies to reach the falls. Swimming is permitted at the base – bring your bathers!"
+                  data-img="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=700">View Details</button>
+                <div class="review-section" id="reviews-Waterfall-Walk"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Trail Detail Modal -->
+  <div class="modal-overlay" id="trail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close" aria-label="Close modal">&times;</button>
+      <img id="modal-img" src="" alt="" style="width:100%; border-radius:8px; margin-bottom:1rem; max-height:240px; object-fit:cover;">
+      <h2 id="modal-title" style="color:var(--green-dark); margin-bottom:.5rem;"></h2>
+      <p id="modal-meta" style="font-size:.88rem; color:var(--gray); margin-bottom:1rem;"></p>
+      <p id="modal-desc" style="line-height:1.7;"></p>
+      <div style="margin-top:1.4rem;">
+        <a href="contact.html" class="btn-trail" style="font-size:.9rem;">Enquire About This Trail</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a><a href="routes.html">Routes</a>
+      <a href="gear.html">Gear</a><a href="stories.html">Stories</a>
+      <a href="membership.html">Membership</a><a href="contact.html">Contact</a>
+    </div>
+    <p>&copy; 2026 River Trail Adventures &nbsp;|&nbsp; Last updated: April 2026 &nbsp;|&nbsp;
+       <a href="mailto:info@rivertrail.com.au">info@rivertrail.com.au</a></p>
+  </footer>
+  <button id="back-to-top" aria-label="Back to top">&#8679;</button>
+
+  <script src="main.js"></script>
+  <script>
+  /* ── Trail search & filter ──────────────────────────── */
+  const trailItems = document.querySelectorAll('.trail-item');
+  const noResults  = document.getElementById('no-results');
+  const searchInput= document.getElementById('trail-search');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  let activeFilter = 'all';
+
+  function applyFilters() {
+    const q = searchInput.value.toLowerCase().trim();
+    let visible = 0;
+    trailItems.forEach(item => {
+      const match = (q==='' || item.dataset.name.includes(q))
+                 && (activeFilter==='all' || item.dataset.difficulty===activeFilter);
+      item.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    noResults.style.display = visible===0 ? 'block' : 'none';
+  }
+  searchInput.addEventListener('input', applyFilters);
+  document.getElementById('trail-search-btn').addEventListener('click', applyFilters);
+  searchInput.addEventListener('keydown', e => { if(e.key==='Enter') applyFilters(); });
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  /* ── Trail detail modal ─────────────────────────────── */
+  const modal      = document.getElementById('trail-modal');
+  const modalClose = document.getElementById('modal-close');
+
+  document.querySelectorAll('.view-details-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('modal-title').textContent = btn.dataset.title;
+      document.getElementById('modal-desc').textContent  = btn.dataset.description;
+      document.getElementById('modal-meta').textContent  =
+        btn.dataset.difficulty+' · '+btn.dataset.distance+' · '+btn.dataset.time;
+      document.getElementById('modal-img').src = btn.dataset.img;
+      document.getElementById('modal-img').alt = btn.dataset.title;
+      modal.classList.add('open');
+      modalClose.focus();
+    });
+  });
+  function closeModal() { modal.classList.remove('open'); }
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+  /* ── Reviews ─────────────────────────────────────────── */
+  const TRAILS = [
+    'Coastal Walk','River Loop','Forest Track',
+    'Mountain Pass','Valley Circuit','Waterfall Walk'
+  ];
+
+  /*
+   * FIX: Trail names contain spaces (e.g. "Coastal Walk").
+   * Spaces in HTML id attributes are invalid, and spaces in
+   * querySelector strings are interpreted as descendant
+   * combinators, silently breaking all star event listeners.
+   * safeId() converts "Coastal Walk" → "Coastal-Walk" so
+   * every getElementById / querySelector works correctly.
+   */
+  function safeId(name) {
+    return name.replace(/\s+/g, '-');
+  }
+
+  function starsHtml(n) {
+    return '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+  }
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* Build review section for one trail */
+  function buildReviewSection(trailName) {
+    const sid = safeId(trailName);                          // ← CSS-safe ID key
+    const sec = document.getElementById(`reviews-${sid}`);
+    if (!sec) return;
+
+    sec.innerHTML = `
+      <h4>Community Reviews <span id="avg-${sid}" style="font-size:.88rem; color:var(--gray); font-weight:400;"></span></h4>
+      <div id="rev-list-${sid}"><p style="font-size:.85rem; color:var(--gray);">Loading reviews…</p></div>
+      <div id="rev-pages-${sid}" style="display:flex; gap:.3rem; flex-wrap:wrap; margin:.5rem 0;"></div>
+
+      <div class="review-form" id="rev-form-wrap-${sid}">
+        <label>Your name <span class="required">*</span><br>
+          <input type="text" id="rev-name-${sid}" placeholder="e.g. Sarah K." maxlength="80">
+        </label>
+        <label>Rating <span class="required">*</span></label>
+        <div class="star-input" id="stars-${sid}" role="group" aria-label="Star rating for ${esc(trailName)}">
+          ${[1,2,3,4,5].map(i=>`<span data-val="${i}" title="${i} star${i>1?'s':''}">★</span>`).join('')}
+        </div>
+        <label>Comment <span class="required">*</span><br>
+          <textarea id="rev-comment-${sid}" rows="2" placeholder="How was your hike?" maxlength="500"></textarea>
+        </label>
+        <button class="review-submit-btn" onclick="submitReview('${esc(trailName)}')">Post Review</button>
+        <p class="review-err" id="rev-err-${sid}" style="display:none;"></p>
+        <p class="review-ok"  id="rev-ok-${sid}"  style="display:none;"></p>
+      </div>
+    `;
+
+    /* Star rating interaction — uses safeId-based selectors */
+    let selectedRating = 0;
+    const starsContainer = document.getElementById(`stars-${sid}`);
+    const starEls        = starsContainer.querySelectorAll('span'); // ← direct children, no space-ambiguity
+
+    starEls.forEach(star => {
+      star.addEventListener('mouseenter', () => {
+        starEls.forEach(s =>
+          s.classList.toggle('active', parseInt(s.dataset.val) <= parseInt(star.dataset.val))
+        );
+      });
+      star.addEventListener('mouseleave', () => {
+        starEls.forEach(s =>
+          s.classList.toggle('active', parseInt(s.dataset.val) <= selectedRating)
+        );
+      });
+      star.addEventListener('click', () => {
+        selectedRating = parseInt(star.dataset.val);
+        starsContainer.dataset.rating = selectedRating;           // ← store on the container
+        starEls.forEach(s =>
+          s.classList.toggle('active', parseInt(s.dataset.val) <= selectedRating)
+        );
+      });
+    });
+
+    loadReviews(trailName, 1);
+  }
+
+  /* Paginated review loader */
+  async function loadReviews(trailName, page=1) {
+    const sid     = safeId(trailName);
+    const listDiv = document.getElementById(`rev-list-${sid}`);
+    const pgDiv   = document.getElementById(`rev-pages-${sid}`);
+    const avgSpan = document.getElementById(`avg-${sid}`);
+    if (!listDiv) return;
+
+    try {
+      const res  = await fetch(`/api/reviews?trail=${encodeURIComponent(trailName)}&page=${page}&limit=3`);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+
+      if (data.avg) {
+        avgSpan.textContent = `· ${starsHtml(data.avg)} ${data.avg}/5 (${data.meta.total})`;
+      } else {
+        avgSpan.textContent = '· No reviews yet';
+      }
+
+      if (!data.data.length) {
+        listDiv.innerHTML = `<p style="font-size:.82rem; color:var(--gray); font-style:italic;">No reviews yet — be the first!</p>`;
+      } else {
+        listDiv.innerHTML = data.data.map(r => `
+          <div class="review-item">
+            <div class="r-head">
+              <span class="r-name">${esc(r.reviewer)}</span>
+              <span class="r-stars">${starsHtml(r.rating)}</span>
+            </div>
+            <div class="r-text">${esc(r.comment)}</div>
+            <div class="r-date">${r.created_at}</div>
+          </div>`).join('');
+      }
+
+      /* Pagination */
+      pgDiv.innerHTML = '';
+      if (data.meta.pages > 1) {
+        for (let i=1; i<=data.meta.pages; i++) {
+          const b = document.createElement('button');
+          b.className = 'page-btn' + (i===page?' active':'');
+          b.textContent = i;
+          b.style.cssText = 'padding:.25rem .6rem; font-size:.78rem;';
+          b.addEventListener('click', () => loadReviews(trailName, i));
+          pgDiv.appendChild(b);
+        }
+      }
+    } catch(err) {
+      if (listDiv) listDiv.innerHTML = `<p style="color:#dc2626;font-size:.82rem;">Could not load reviews.</p>`;
+    }
+  }
+
+  /* Submit a review */
+  async function submitReview(trailName) {
+    const sid       = safeId(trailName);
+    const nameEl    = document.getElementById(`rev-name-${sid}`);
+    const commentEl = document.getElementById(`rev-comment-${sid}`);
+    const starsEl   = document.getElementById(`stars-${sid}`);
+    const errEl     = document.getElementById(`rev-err-${sid}`);
+    const okEl      = document.getElementById(`rev-ok-${sid}`);
+
+    errEl.style.display = 'none'; okEl.style.display = 'none';
+
+    const reviewer = nameEl.value.trim();
+    const comment  = commentEl.value.trim();
+    const rating   = parseInt(starsEl.dataset.rating || '0');
+
+    if (!reviewer) { errEl.textContent='Please enter your name.'; errEl.style.display='block'; return; }
+    if (!rating)   { errEl.textContent='Please select a star rating.'; errEl.style.display='block'; return; }
+    if (comment.length < 5) { errEl.textContent='Please write at least 5 characters.'; errEl.style.display='block'; return; }
+
+    try {
+      const res  = await fetch('/api/reviews', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ trail_name: trailName, reviewer, rating, comment })
+      });
+      const data = await res.json();
+      if (data.success) {
+        okEl.textContent = '✅ ' + data.message; okEl.style.display = 'block';
+        nameEl.value = ''; commentEl.value = '';
+        starsEl.dataset.rating = '0';
+        starsEl.querySelectorAll('span').forEach(s => s.classList.remove('active'));
+        loadReviews(trailName, 1);
+      } else {
+        const msg = data.errors ? data.errors.map(x=>x.msg).join(' | ') : (data.error||'Error');
+        errEl.textContent = '❌ '+msg; errEl.style.display = 'block';
+      }
+    } catch {
+      errEl.textContent = '❌ Cannot reach server.'; errEl.style.display = 'block';
+    }
+  }
+
+  /* Initialise all review sections */
+  TRAILS.forEach(t => buildReviewSection(t));
+
+  /* ── Smart Recommender Banner (Task 10.3HD) ──────────────
+     Reads journal data from localStorage (written by journal.html).
+     If the user has logged hikes, shows personalised recommendations
+     at the top of the routes page.
+     ─────────────────────────────────────────────────────── */
+  (function() {
+    const LS_KEY = 'rivertrail_journal_v1';
+    const entries = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+    if (!entries.length) return;
+
+    const CATALOGUE = [
+      { name:'Coastal Walk',   difficulty:1, km:5.2  },
+      { name:'River Loop',     difficulty:1, km:4.3  },
+      { name:'Forest Track',   difficulty:2, km:6.0  },
+      { name:'Valley Circuit', difficulty:2, km:8.5  },
+      { name:'Mountain Pass',  difficulty:3, km:14.2 },
+      { name:'Waterfall Walk', difficulty:1, km:3.1  },
+    ];
+    const DIFF_LABEL = {1:'Easy', 2:'Moderate', 3:'Hard'};
+
+    const avgKm   = entries.reduce((s,e)=>s+(parseFloat(e.km)||0),0)/entries.length;
+    const dCount  = {1:0,2:0,3:0};
+    const dMap    = {}; CATALOGUE.forEach(t=>{dMap[t.name.toLowerCase()]=t.difficulty;});
+    entries.forEach(e=>{ const d=dMap[e.trail.toLowerCase()]||1; dCount[d]=(dCount[d]||0)+1; });
+    const prefD   = parseInt(Object.entries(dCount).sort((a,b)=>b[1]-a[1])[0][0]);
+    const done    = new Set(entries.map(e=>e.trail.toLowerCase()));
+    const last    = entries[0]?.trail?.toLowerCase()||'';
+
+    const scored = CATALOGUE.map(t=>{
+      let s=0;
+      const dd=Math.abs(t.km-avgKm);
+      if(t.difficulty===prefD)   s+=35;
+      else if(t.difficulty===prefD+1) s+=20;
+      if(dd<=1) s+=25; else if(dd<=3) s+=15;
+      if(!done.has(t.name.toLowerCase())) s+=20;
+      if(t.name.toLowerCase()===last) s-=50;
+      return {...t, score:s};
+    }).filter(t=>t.score>0).sort((a,b)=>b.score-a.score).slice(0,2);
+
+    if (!scored.length) return;
+
+    // Show banner
+    document.getElementById('rec-banner').style.display = 'block';
+    document.getElementById('rec-banner-title').textContent =
+      `✨ Based on your ${entries.length} hike${entries.length>1?'s':''}, we recommend:`;
+
+    const pills = document.getElementById('rec-banner-pills');
+    scored.forEach(t => {
+      const pct = Math.min(99, Math.round(t.score));
+      const col = t.difficulty===1?'#2d6a2d': t.difficulty===2?'#b45309':'#991b1b';
+      pills.innerHTML += `
+        <div style="background:#fff; border:1.5px solid #bae6fd; border-radius:8px;
+                    padding:.5rem .9rem; display:flex; align-items:center; gap:.6rem;">
+          <strong style="color:${col}; font-size:.92rem;">${t.name}</strong>
+          <span style="font-size:.78rem; color:#555;">${DIFF_LABEL[t.difficulty]} · ${t.km} km</span>
+          <span style="background:#5cb85c; color:#fff; padding:1px 8px;
+                       border-radius:20px; font-size:.72rem; font-weight:700;">${pct}% match</span>
+        </div>`;
+    });
+
+    // Also highlight matching trail cards with a subtle glow
+    scored.forEach(t => {
+      const cards = document.querySelectorAll('.trail-item');
+      cards.forEach(card => {
+        if (card.dataset.name && card.dataset.name === t.name.toLowerCase()) {
+          card.querySelector('.card-trail').style.boxShadow = '0 0 0 2px #3b82f6, 0 8px 24px rgba(59,130,246,.15)';
+        }
+      });
+    });
+  })();
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="River Trail Adventures – Contact us with your queries and feedback.">
+  <title>River Trail Adventures | Contact</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .enquiries-section { margin-top:2.5rem; }
+    .enquiries-section h2 { font-size:1.1rem; color:var(--green-dark); margin-bottom:1rem; }
+    .enq-filters { display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:1rem; align-items:center; }
+    .enq-filters input, .enq-filters select {
+      padding:.4rem .8rem; border:1px solid var(--border);
+      border-radius:6px; font-size:.88rem; font-family:inherit;
+    }
+    .enq-filters input:focus, .enq-filters select:focus { border-color:var(--green-mid); outline:none; }
+    .filter-btn-sm {
+      padding:.4rem .9rem; background:var(--green-light); color:#fff;
+      border:none; border-radius:6px; font-size:.88rem; cursor:pointer;
+      font-weight:600; transition:background .2s;
+    }
+    .filter-btn-sm:hover { background:var(--green-dark); }
+    .enq-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+    .enq-table th { background:var(--green-dark); color:#fff; padding:.55rem .7rem; text-align:left; white-space:nowrap; }
+    .enq-table td { padding:.5rem .7rem; border-bottom:1px solid var(--border); vertical-align:top; }
+    .enq-table tr:hover td { background:var(--cream); }
+    .enq-table .msg-text { max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; }
+    .status-badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:.74rem; font-weight:600; }
+    .status-new      { background:#fef9c3; color:#854d0e; }
+    .status-read     { background:#dbeafe; color:#1e40af; }
+    .status-resolved { background:#dcfce7; color:#166534; }
+    .subject-badge   { display:inline-block; padding:2px 8px; border-radius:12px; font-size:.74rem; background:var(--cream); color:var(--brown); }
+    .btn-del {
+      background:none; border:1px solid #fca5a5; color:#dc2626;
+      padding:2px 8px; border-radius:4px; cursor:pointer; font-size:.78rem; transition:background .15s;
+    }
+    .btn-del:hover { background:#fef2f2; }
+    .btn-st {
+      background:none; border:1px solid var(--border); color:var(--gray);
+      padding:2px 7px; border-radius:4px; cursor:pointer; font-size:.76rem; margin-right:2px; transition:background .15s;
+    }
+    .btn-st:hover { background:var(--light-gray); }
+    .pagination { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.9rem; align-items:center; }
+    .page-btn {
+      padding:.32rem .7rem; border:1px solid var(--border); background:var(--white);
+      border-radius:5px; cursor:pointer; font-size:.83rem; transition:all .15s;
+    }
+    .page-btn:hover, .page-btn.active { background:var(--green-dark); color:#fff; border-color:var(--green-dark); }
+    .page-btn:disabled { opacity:.4; cursor:not-allowed; }
+    .page-info { font-size:.8rem; color:var(--gray); margin-left:.4rem; }
+    .table-empty  { text-align:center; padding:1.5rem; color:var(--gray); font-style:italic; }
+    .table-loading{ text-align:center; padding:1.2rem; color:var(--gray); }
+    .server-err   { color:#dc2626; font-size:.88rem; margin-top:.7rem; }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="greeting-banner" aria-live="polite"></div>
+
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem;">
+      <a class="navbar-brand" href="index.html">🥾 River Trail</a>
+      <button class="navbar-toggler" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <ul class="navbar-nav" id="navMenu" style="display:flex; list-style:none; gap:.2rem; flex-wrap:wrap;">
+        <li><a class="nav-link" href="index.html">Home</a></li>
+        <li><a class="nav-link" href="routes.html">Routes</a></li>
+        <li><a class="nav-link" href="gear.html">Gear</a></li>
+        <li><a class="nav-link" href="stories.html">Stories</a></li>
+        <li><a class="nav-link" href="membership.html">Membership</a></li>
+        <li><a class="nav-link active" href="contact.html" aria-current="page">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section class="section-pad">
+      <div class="container">
+        <div class="section-heading reveal">
+          <h1>Contact Us</h1>
+          <p>We'd love to hear from you – we reply within 48 hours</p>
+        </div>
+
+        <div class="row g-4">
+
+          <!-- Contact Form -->
+          <div class="col-7 reveal">
+            <div class="form-section">
+              <h2 style="font-size:1.15rem; margin-bottom:1.2rem; color:var(--brown);">Send us a query or feedback</h2>
+              <form id="contactForm" novalidate>
+
+                <div style="margin-bottom:1rem;">
+                  <label class="form-label" for="contact-name">Name <span class="required">*</span></label>
+                  <input type="text" id="contact-name" class="form-control" placeholder="Your name" autocomplete="name">
+                  <p class="error-msg" id="err-name">Please enter your name.</p>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                  <label class="form-label" for="contact-email">Email <span class="required">*</span></label>
+                  <input type="text" id="contact-email" class="form-control" placeholder="your@email.com" autocomplete="email">
+                  <p class="error-msg" id="err-email">Please enter a valid email address.</p>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                  <label class="form-label" for="contact-phone">Phone <span class="required">*</span></label>
+                  <input type="text" id="contact-phone" class="form-control" placeholder="0412 345 678" autocomplete="tel" maxlength="15">
+                  <p class="error-msg" id="err-phone">Phone must be 7–15 digits.</p>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                  <label class="form-label" for="contact-subject">Subject</label>
+                  <select id="contact-subject" class="form-control">
+                    <option value="">— Select a topic —</option>
+                    <option value="trail">Trail enquiry</option>
+                    <option value="gear">Gear question</option>
+                    <option value="membership">Membership</option>
+                    <option value="story">Share a story</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div style="margin-bottom:1.2rem;">
+                  <label class="form-label" for="contact-message">Message <span class="required">*</span></label>
+                  <textarea id="contact-message" class="form-control" rows="5"
+                            placeholder="Your message…" style="resize:vertical;"></textarea>
+                  <p class="error-msg" id="err-message">Please enter a message (at least 10 characters).</p>
+                </div>
+
+                <button type="submit" class="btn-trail" id="submit-btn">Send Message</button>
+                <div class="success-box" id="contact-success" role="alert"></div>
+                <p class="server-err" id="contact-err" style="display:none;"></p>
+              </form>
+            </div>
+
+            <!-- Enquiries table -->
+            <div class="enquiries-section">
+              <h2>📬 Submitted Enquiries
+                <span id="enq-total-badge" style="font-size:.8rem; color:var(--gray); font-weight:400;"></span>
+              </h2>
+
+              <div class="enq-filters">
+                <input type="text" id="enq-search" placeholder="Search name, email or message…" style="flex:1; min-width:160px;">
+                <select id="enq-filter">
+                  <option value="">All topics</option>
+                  <option value="trail">Trail enquiry</option>
+                  <option value="gear">Gear question</option>
+                  <option value="membership">Membership</option>
+                  <option value="story">Share a story</option>
+                  <option value="other">Other</option>
+                </select>
+                <button class="filter-btn-sm" id="enq-filter-btn">Filter</button>
+              </div>
+
+              <div id="enq-wrap"><div class="table-loading">Loading enquiries…</div></div>
+              <p id="enq-err" style="color:#dc2626; font-size:.88rem;"></p>
+              <div class="pagination" id="enq-pages"></div>
+            </div>
+          </div>
+
+          <!-- Contact Info -->
+          <div class="col-5 reveal">
+            <div class="info-card">
+              <h2 class="form-section-title" style="margin-top:0;">Contact Information</h2>
+              <p><strong>📞 Phone:</strong><br>03 9876 5432</p>
+              <p><strong>✉️ Email:</strong><br><a href="mailto:info@rivertrail.com.au">info@rivertrail.com.au</a></p>
+              <p><strong>📍 Address:</strong><br>123 Trail Road<br>Melbourne VIC 3000</p>
+              <p><strong>⏰ Office hours:</strong><br>Mon – Fri, 9 am – 5 pm</p>
+            </div>
+            <div class="info-card" style="margin-top:1.2rem;">
+              <h3 style="font-size:1rem; color:var(--green-dark); margin-bottom:.6rem;">Quick Links</h3>
+              <ul style="list-style:none; padding:0; line-height:2;">
+                <li><a href="routes.html">→ Browse hiking routes</a></li>
+                <li><a href="gear.html">→ Shop hiking gear</a></li>
+                <li><a href="membership.html">→ Join as a member</a></li>
+                <li><a href="stories.html">→ Read hiker stories</a></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a><a href="routes.html">Routes</a>
+      <a href="gear.html">Gear</a><a href="stories.html">Stories</a>
+      <a href="membership.html">Membership</a><a href="contact.html">Contact</a>
+    </div>
+    <p>&copy; 2026 River Trail Adventures &nbsp;|&nbsp; Last updated: April 2026 &nbsp;|&nbsp;
+       <a href="mailto:info@rivertrail.com.au">info@rivertrail.com.au</a></p>
+  </footer>
+  <button id="back-to-top" aria-label="Back to top">&#8679;</button>
+
+  <script src="main.js"></script>
+  <script>
+  /* ── helpers ─────────────────────────────────────────── */
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function v(inputId, errId, fail) {
+    const el = document.getElementById(inputId);
+    const er = document.getElementById(errId);
+    if (fail) { el.classList.add('is-invalid'); er.classList.add('visible'); return false; }
+    el.classList.remove('is-invalid'); er.classList.remove('visible'); return true;
+  }
+
+  /* live-clear */
+  const liveMap = {'contact-name':'err-name','contact-email':'err-email','contact-phone':'err-phone','contact-message':'err-message'};
+  Object.keys(liveMap).forEach(id => {
+    document.getElementById(id).addEventListener('input', function(){
+      this.classList.remove('is-invalid');
+      document.getElementById(liveMap[id]).classList.remove('visible');
+    });
+  });
+
+  /* ── Form submit → POST /api/contacts ───────────────── */
+  document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn  = document.getElementById('submit-btn');
+    const sErr = document.getElementById('contact-err');
+    const sOk  = document.getElementById('contact-success');
+    sErr.style.display = 'none'; sOk.classList.remove('visible');
+
+    const name    = document.getElementById('contact-name').value.trim();
+    const email   = document.getElementById('contact-email').value.trim();
+    const phone   = document.getElementById('contact-phone').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+    const subject = document.getElementById('contact-subject').value;
+
+    let ok = true;
+    ok = v('contact-name',    'err-name',    name===''                                                    ) && ok;
+    ok = v('contact-email',   'err-email',   !email.includes('@')||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) && ok;
+    ok = v('contact-phone',   'err-phone',   !/^\d{7,15}$/.test(phone.replace(/\s/g,''))                  ) && ok;
+    ok = v('contact-message', 'err-message', message.length < 10                                           ) && ok;
+    if (!ok) return;
+
+    btn.textContent = 'Sending…'; btn.disabled = true;
+    try {
+      const res  = await fetch('/api/contacts', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ name, email, phone, subject, message })
+      });
+      const data = await res.json();
+      if (data.success) {
+        sOk.textContent = '✅ ' + data.message;
+        sOk.classList.add('visible');
+        this.reset();
+        Object.keys(liveMap).forEach(id => document.getElementById(id).classList.remove('is-invalid'));
+        loadEnq(curPage);
+      } else {
+        const msg = data.errors ? data.errors.map(x=>x.msg).join(' | ') : (data.error||'Unknown error');
+        sErr.textContent = '❌ ' + msg; sErr.style.display = 'block';
+      }
+    } catch {
+      sErr.textContent = '❌ Cannot reach server. Is it running?'; sErr.style.display = 'block';
+    } finally { btn.textContent = 'Send Message'; btn.disabled = false; }
+  });
+
+  /* ── Enquiries table ─────────────────────────────────── */
+  let curPage = 1;
+  const SUBJ  = {trail:'Trail enquiry',gear:'Gear question',membership:'Membership',story:'Share a story',other:'Other','':`—`};
+
+  async function loadEnq(page=1) {
+    curPage = page;
+    const wrap = document.getElementById('enq-wrap');
+    const errP = document.getElementById('enq-err');
+    const pgDiv= document.getElementById('enq-pages');
+    const srch = document.getElementById('enq-search').value.trim();
+    const subj = document.getElementById('enq-filter').value;
+    wrap.innerHTML = '<div class="table-loading">Loading…</div>';
+    pgDiv.innerHTML = ''; errP.textContent = '';
+
+    let url = `/api/contacts?page=${page}&limit=5`;
+    if (srch) url += `&search=${encodeURIComponent(srch)}`;
+    if (subj) url += `&subject=${encodeURIComponent(subj)}`;
+
+    try {
+      const res  = await fetch(url);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error||'Server error');
+      const { data:rows, meta } = data;
+
+      document.getElementById('enq-total-badge').textContent = `(${meta.total} total)`;
+
+      if (!rows.length) { wrap.innerHTML = '<p class="table-empty">No enquiries found.</p>'; return; }
+
+      let h = `<div style="overflow-x:auto"><table class="enq-table"><thead><tr>
+        <th>#</th><th>Name</th><th>Email</th><th>Topic</th>
+        <th>Message</th><th>Status</th><th>Received</th><th>Actions</th>
+      </tr></thead><tbody>`;
+
+      rows.forEach(r => {
+        h += `<tr id="er-${r.id}">
+          <td>${r.id}</td>
+          <td>${esc(r.name)}</td>
+          <td><a href="mailto:${esc(r.email)}" style="font-size:.82rem;">${esc(r.email)}</a></td>
+          <td><span class="subject-badge">${SUBJ[r.subject]||r.subject}</span></td>
+          <td><span class="msg-text" title="${esc(r.message)}">${esc(r.message)}</span></td>
+          <td><span class="status-badge status-${r.status}" id="st-${r.id}">${r.status}</span></td>
+          <td style="font-size:.78rem;white-space:nowrap;">${r.created_at}</td>
+          <td style="white-space:nowrap;">
+            <button class="btn-st" onclick="setStatus(${r.id},'read')"     title="Mark read">📖</button>
+            <button class="btn-st" onclick="setStatus(${r.id},'resolved')" title="Mark resolved">✔</button>
+            <button class="btn-del" onclick="delEnq(${r.id})">✕</button>
+          </td>
+        </tr>`;
+      });
+      h += '</tbody></table></div>';
+      wrap.innerHTML = h;
+
+      /* pagination */
+      if (meta.pages > 1) {
+        let p = `<button class="page-btn" onclick="loadEnq(${meta.page-1})" ${meta.page===1?'disabled':''}>‹</button>`;
+        for (let i=1; i<=meta.pages; i++)
+          p += `<button class="page-btn ${i===meta.page?'active':''}" onclick="loadEnq(${i})">${i}</button>`;
+        p += `<button class="page-btn" onclick="loadEnq(${meta.page+1})" ${meta.page===meta.pages?'disabled':''}>›</button>`;
+        p += `<span class="page-info">Page ${meta.page} of ${meta.pages}</span>`;
+        pgDiv.innerHTML = p;
+      }
+    } catch(err) { wrap.innerHTML=''; errP.textContent = '❌ '+err.message; }
+  }
+
+  async function delEnq(id) {
+    if (!confirm('Delete this enquiry permanently?')) return;
+    try {
+      const r = await fetch(`/api/contacts/${id}`,{method:'DELETE'});
+      const d = await r.json();
+      if (d.success) loadEnq(curPage); else alert('Error: '+d.error);
+    } catch { alert('Server error.'); }
+  }
+
+  async function setStatus(id, status) {
+    try {
+      const r = await fetch(`/api/contacts/${id}/status`,{
+        method:'PATCH', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({status})
+      });
+      const d = await r.json();
+      if (d.success) {
+        const b = document.getElementById(`st-${id}`);
+        if (b) { b.className=`status-badge status-${status}`; b.textContent=status; }
+      }
+    } catch { /* silent */ }
+  }
+
+  document.getElementById('enq-filter-btn').addEventListener('click', () => loadEnq(1));
+  document.getElementById('enq-search').addEventListener('keydown', e => { if(e.key==='Enter') loadEnq(1); });
+  document.getElementById('enq-filter').addEventListener('change', () => loadEnq(1));
+
+  loadEnq(1);
+  </script>
+</body>
+</html>

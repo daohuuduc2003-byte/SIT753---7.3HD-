@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="River Trail Adventures – Gear shop with curated hiking equipment.">
+  <title>River Trail Adventures | Gear</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="greeting-banner" aria-live="polite"></div>
+
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem;">
+      <a class="navbar-brand" href="index.html">🥾 River Trail</a>
+      <button class="navbar-toggler" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <ul class="navbar-nav" id="navMenu" style="display:flex; list-style:none; gap:.2rem; flex-wrap:wrap;">
+        <li><a class="nav-link" href="index.html">Home</a></li>
+        <li><a class="nav-link" href="routes.html">Routes</a></li>
+        <li><a class="nav-link active" href="gear.html" aria-current="page">Gear</a></li>
+        <li><a class="nav-link" href="stories.html">Stories</a></li>
+        <li><a class="nav-link" href="membership.html">Membership</a></li>
+        <li><a class="nav-link" href="journal.html">📋 Journal</a></li>
+        <li><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section class="section-pad">
+      <div class="container">
+        <div class="section-heading reveal">
+          <h1>Hiking Gear</h1>
+          <p>Everything you need for a safe and comfortable adventure on the trail</p>
+        </div>
+
+        <!-- Gear search -->
+        <div class="search-wrap reveal">
+          <label for="gear-search" style="position:absolute; clip:rect(0,0,0,0);">Search gear</label>
+          <input type="text" id="gear-search" class="form-control"
+                 placeholder="Search gear (e.g. boots, jacket, pack)"
+                 aria-label="Search gear" style="border-radius:6px 0 0 6px;">
+          <button id="gear-search-btn" type="button">Search</button>
+        </div>
+
+        <!-- Accordion categories -->
+        <div style="margin-bottom:2.5rem;" class="reveal">
+
+          <!-- Footwear -->
+          <div class="accordion-item">
+            <button class="accordion-btn open" data-acc="footwear" aria-expanded="true" aria-controls="acc-footwear">
+              👟 Footwear
+              <span class="acc-icon">&#9660;</span>
+            </button>
+            <div class="accordion-content open" id="acc-footwear">
+              <div class="row g-4" id="gear-grid">
+                <div class="col-4 gear-item" data-name="trail runner shoes">
+                  <div class="card-trail">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600"
+                         alt="Trail Runner Shoes – lightweight red running shoes for trail use">
+                    <div class="card-body">
+                      <h5>Trail Runner Shoes</h5>
+                      <p>Lightweight, grippy soles ideal for fast-paced day hikes on maintained tracks.</p>
+                      <p style="font-weight:700; color:var(--green-dark);">$189</p>
+                      <button class="btn-trail add-cart" style="font-size:.85rem; padding:.45rem 1rem; margin-top:.4rem;"
+                              data-name="Trail Runner Shoes" data-price="189">
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4 gear-item" data-name="waterproof hiking boots">
+                  <div class="card-trail">
+                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600"
+                         alt="Waterproof Hiking Boots – sturdy brown boots with ankle support">
+                    <div class="card-body">
+                      <h5>Waterproof Hiking Boots</h5>
+                      <p>Full-grain leather with Gore-Tex lining. Excellent ankle support for rough terrain.</p>
+                      <p style="font-weight:700; color:var(--green-dark);">$295</p>
+                      <button class="btn-trail add-cart" style="font-size:.85rem; padding:.45rem 1rem; margin-top:.4rem;"
+                              data-name="Waterproof Hiking Boots" data-price="295">
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Packs & Bags -->
+          <div class="accordion-item">
+            <button class="accordion-btn open" data-acc="packs" aria-expanded="true" aria-controls="acc-packs">
+              🎒 Packs &amp; Bags
+              <span class="acc-icon">&#9660;</span>
+            </button>
+            <div class="accordion-content open" id="acc-packs">
+              <div class="row g-4">
+                <div class="col-4 gear-item" data-name="30l hiking backpack">
+                  <div class="card-trail">
+                    <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=600"
+                         alt="30L Hiking Backpack – hiker wearing a full backpack on a mountain trail">
+                    <div class="card-body">
+                      <h5>30L Hiking Backpack</h5>
+                      <p>Ergonomic frame with hip belt and hydration sleeve. Perfect for full-day hikes.</p>
+                      <p style="font-weight:700; color:var(--green-dark);">$149</p>
+                      <button class="btn-trail add-cart" style="font-size:.85rem; padding:.45rem 1rem; margin-top:.4rem;"
+                              data-name="30L Hiking Backpack" data-price="149">
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clothing -->
+          <div class="accordion-item">
+            <button class="accordion-btn open" data-acc="clothing" aria-expanded="true" aria-controls="acc-clothing">
+              🧥 Clothing
+              <span class="acc-icon">&#9660;</span>
+            </button>
+            <div class="accordion-content open" id="acc-clothing">
+              <div class="row g-4">
+                <div class="col-4 gear-item" data-name="waterproof jacket">
+                  <div class="card-trail">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"
+                         alt="Waterproof Jacket – person wearing a green jacket on a mountain">
+                    <div class="card-body">
+                      <h5>Waterproof Jacket</h5>
+                      <p>3-layer hardshell with pit zips. Packs into its own pocket for easy stowing.</p>
+                      <p style="font-weight:700; color:var(--green-dark);">$249</p>
+                      <button class="btn-trail add-cart" style="font-size:.85rem; padding:.45rem 1rem; margin-top:.4rem;"
+                              data-name="Waterproof Jacket" data-price="249">
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4 gear-item" data-name="merino wool base layer">
+                  <div class="card-trail">
+                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600"
+                         alt="Merino Wool Base Layer – close-up of a grey merino wool shirt">
+                    <div class="card-body">
+                      <h5>Merino Wool Base Layer</h5>
+                      <p>Naturally odour-resistant and temperature-regulating. Great for multi-day trips.</p>
+                      <p style="font-weight:700; color:var(--green-dark);">$119</p>
+                      <button class="btn-trail add-cart" style="font-size:.85rem; padding:.45rem 1rem; margin-top:.4rem;"
+                              data-name="Merino Wool Base Layer" data-price="119">
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /accordions -->
+
+        <!-- Cart summary -->
+        <div id="cart-summary" style="display:none; background:var(--cream); border:1px solid #e0d5c5; border-radius:10px; padding:1.5rem; max-width:460px;">
+          <h3 style="font-size:1.05rem; color:var(--green-dark); margin-bottom:.8rem;">🛒 Your Cart</h3>
+          <ul id="cart-list" style="list-style:none; padding:0; margin:0 0 1rem;"></ul>
+          <p style="font-weight:700;">Total: $<span id="cart-total">0</span></p>
+          <div style="display:flex; gap:.7rem; margin-top:1rem; flex-wrap:wrap;">
+            <button class="btn-outline-trail" id="continue-shopping">Continue Shopping</button>
+            <a href="contact.html" class="btn-trail" style="font-size:.9rem; padding:.55rem 1.2rem;">Enquire About Order</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="routes.html">Routes</a>
+      <a href="gear.html">Gear</a>
+      <a href="stories.html">Stories</a>
+      <a href="membership.html">Membership</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <p>&copy; 2026 River Trail Adventures &nbsp;|&nbsp; Last updated: April 2026 &nbsp;|&nbsp;
+       <a href="mailto:info@rivertrail.com.au">info@rivertrail.com.au</a>
+    </p>
+  </footer>
+
+  <button id="back-to-top" aria-label="Back to top">&#8679;</button>
+
+  <script src="main.js"></script>
+  <script>
+    // ── Accordion ────────────────────────────────────────
+    document.querySelectorAll('.accordion-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id      = btn.dataset.acc;
+        const content = document.getElementById('acc-' + id);
+        const isOpen  = content.classList.contains('open');
+        content.classList.toggle('open', !isOpen);
+        btn.classList.toggle('open', !isOpen);
+        btn.setAttribute('aria-expanded', String(!isOpen));
+      });
+    });
+
+    // ── Gear search ──────────────────────────────────────
+    const gearSearch = document.getElementById('gear-search');
+    function filterGear() {
+      const q = gearSearch.value.toLowerCase().trim();
+      document.querySelectorAll('.gear-item').forEach(item => {
+        item.style.display = (q === '' || item.dataset.name.includes(q)) ? '' : 'none';
+      });
+    }
+    gearSearch.addEventListener('input', filterGear);
+    document.getElementById('gear-search-btn').addEventListener('click', filterGear);
+
+    // ── Cart ─────────────────────────────────────────────
+    let cart = [];
+    document.querySelectorAll('.add-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name  = btn.dataset.name;
+        const price = parseInt(btn.dataset.price);
+        cart.push({ name, price });
+        renderCart();
+        btn.textContent = '✔ Added';
+        btn.disabled = true;
+        setTimeout(() => { btn.textContent = 'Add to Cart'; btn.disabled = false; }, 2000);
+      });
+    });
+
+    function renderCart() {
+      const summary   = document.getElementById('cart-summary');
+      const list      = document.getElementById('cart-list');
+      const totalSpan = document.getElementById('cart-total');
+      summary.style.display = cart.length ? 'block' : 'none';
+      list.innerHTML = cart.map(item =>
+        `<li style="display:flex;justify-content:space-between;padding:.25rem 0;border-bottom:1px solid #e0d5c5;">
+           <span>${item.name}</span><strong>$${item.price}</strong>
+         </li>`).join('');
+      totalSpan.textContent = cart.reduce((s, i) => s + i.price, 0);
+    }
+
+    document.getElementById('continue-shopping').addEventListener('click', () => {
+      cart = [];
+      renderCart();
+      document.querySelectorAll('.add-cart').forEach(b => { b.textContent = 'Add to Cart'; b.disabled = false; });
+    });
+  </script>
+</body>
+</html>

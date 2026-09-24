@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="River Trail Adventures – Discover, explore, and enjoy Australia's best hiking trails.">
+  <title>River Trail Adventures | Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Dynamic greeting banner (JS fills this) -->
+  <div id="greeting-banner" aria-live="polite"></div>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem;">
+      <a class="navbar-brand" href="index.html">🥾 River Trail</a>
+
+      <!-- Hamburger for mobile -->
+      <button class="navbar-toggler" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <ul class="navbar-nav" id="navMenu" style="display:flex; list-style:none; gap:.2rem; flex-wrap:wrap;">
+        <li><a class="nav-link active" href="index.html" aria-current="page">Home</a></li>
+        <li><a class="nav-link" href="routes.html">Routes</a></li>
+        <li><a class="nav-link" href="gear.html">Gear</a></li>
+        <li><a class="nav-link" href="stories.html">Stories</a></li>
+        <li><a class="nav-link" href="membership.html">Membership</a></li>
+        <li><a class="nav-link" href="journal.html">📋 Journal</a></li>
+        <li><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- ── Hero ──────────────────────────────────────────── -->
+    <section class="hero" aria-label="Welcome banner">
+      <div>
+        <h1>Welcome to River Trail Adventures</h1>
+        <p>Discover, explore, and enjoy Australia's best hiking trails</p>
+        <a href="routes.html" class="btn-trail">Browse All Routes</a>
+      </div>
+    </section>
+
+    <!-- ── Featured Trails ───────────────────────────────── -->
+    <section class="section-pad" aria-labelledby="featured-heading">
+      <div class="container">
+        <div class="section-heading reveal">
+          <h2 id="featured-heading">Featured Trails</h2>
+          <p>Hand-picked routes for every level of hiker</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-4 reveal">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"
+                   alt="Coastal Walk – scenic coastal path with ocean views">
+              <div class="card-body">
+                <h5>Coastal Walk</h5>
+                <p>Gentle seaside stroll with stunning views of the Southern Ocean.</p>
+                <p><span class="badge-easy">Easy</span> &nbsp; 5.2 km</p>
+                <a href="routes.html" class="btn-outline-trail" style="margin-top:.6rem;">View Route</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4 reveal">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=600"
+                   alt="River Loop – hiker walking beside a mountain river">
+              <div class="card-body">
+                <h5>River Loop</h5>
+                <p>A relaxing loop along the riverbank through ancient eucalyptus.</p>
+                <p><span class="badge-easy">Easy</span> &nbsp; 4.3 km</p>
+                <a href="routes.html" class="btn-outline-trail" style="margin-top:.6rem;">View Route</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4 reveal">
+            <div class="card-trail">
+              <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600"
+                   alt="Forest Track – tall trees creating a canopy over a dirt trail">
+              <div class="card-body">
+                <h5>Forest Track</h5>
+                <p>A challenging climb through dense rainforest with mountain views.</p>
+                <p><span class="badge-moderate">Moderate</span> &nbsp; 6.0 km</p>
+                <a href="routes.html" class="btn-outline-trail" style="margin-top:.6rem;">View Route</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Why Join section ──────────────────────────────── -->
+    <section class="section-pad" style="background: var(--cream);" aria-labelledby="why-heading">
+      <div class="container">
+        <div class="section-heading reveal">
+          <h2 id="why-heading">Why Join River Trail?</h2>
+          <p>More than just a trail guide – a community of passionate hikers</p>
+        </div>
+        <div class="row g-4 text-center">
+          <div class="col-4 reveal">
+            <div style="font-size:2.4rem;">🗺️</div>
+            <h3 style="font-size:1.1rem; margin:.6rem 0 .4rem; color:var(--green-dark);">Curated Routes</h3>
+            <p style="font-size:.9rem; color:var(--gray);">Every trail is personally scouted and rated by our community.</p>
+          </div>
+          <div class="col-4 reveal">
+            <div style="font-size:2.4rem;">🎒</div>
+            <h3 style="font-size:1.1rem; margin:.6rem 0 .4rem; color:var(--green-dark);">Gear Advice</h3>
+            <p style="font-size:.9rem; color:var(--gray);">Find the right kit for every terrain and season in our gear shop.</p>
+          </div>
+          <div class="col-4 reveal">
+            <div style="font-size:2.4rem;">🤝</div>
+            <h3 style="font-size:1.1rem; margin:.6rem 0 .4rem; color:var(--green-dark);">Community Stories</h3>
+            <p style="font-size:.9rem; color:var(--gray);">Real trail experiences shared by hikers just like you.</p>
+          </div>
+        </div>
+        <div class="text-center" style="margin-top:2rem;">
+          <a href="membership.html" class="btn-trail">Become a Member</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Quick links ───────────────────────────────────── -->
+    <section class="section-pad-sm" aria-label="Quick navigation links">
+      <div class="container text-center reveal">
+        <h2 style="font-size:1.3rem; color:var(--gray); font-weight:400; margin-bottom:1.2rem;">Quick links</h2>
+        <div style="display:flex; flex-wrap:wrap; gap:.75rem; justify-content:center;">
+          <a href="routes.html" class="btn-outline-trail">Routes</a>
+          <a href="stories.html" class="btn-outline-trail">Stories</a>
+          <a href="membership.html" class="btn-outline-trail">Membership</a>
+          <a href="contact.html" class="btn-outline-trail">Contact</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="routes.html">Routes</a>
+      <a href="gear.html">Gear</a>
+      <a href="stories.html">Stories</a>
+      <a href="membership.html">Membership</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <p>&copy; 2026 River Trail Adventures &nbsp;|&nbsp; Last updated: April 2026 &nbsp;|&nbsp;
+       <a href="mailto:info@rivertrail.com.au">info@rivertrail.com.au</a>
+    </p>
+  </footer>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" aria-label="Back to top">&#8679;</button>
+
+  <script src="main.js"></script>
+</body>
+</html>

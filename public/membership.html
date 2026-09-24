@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="River Trail Adventures – Join our community as a member.">
+  <title>River Trail Adventures | Membership</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .member-count-banner {
+      background: var(--cream); border:1px solid #e0d5c5;
+      border-radius:8px; padding:.6rem 1.2rem; margin-bottom:1.5rem;
+      font-size:.92rem; color:var(--brown); text-align:center;
+    }
+    .server-err { color:#dc2626; font-size:.9rem; margin-top:.8rem; }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="greeting-banner" aria-live="polite"></div>
+
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem;">
+      <a class="navbar-brand" href="index.html">🥾 River Trail</a>
+      <button class="navbar-toggler" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <ul class="navbar-nav" id="navMenu" style="display:flex; list-style:none; gap:.2rem; flex-wrap:wrap;">
+        <li><a class="nav-link" href="index.html">Home</a></li>
+        <li><a class="nav-link" href="routes.html">Routes</a></li>
+        <li><a class="nav-link" href="gear.html">Gear</a></li>
+        <li><a class="nav-link" href="stories.html">Stories</a></li>
+        <li><a class="nav-link active" href="membership.html" aria-current="page">Membership</a></li>
+        <li><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- Benefits -->
+    <section style="background:var(--cream); padding:2.5rem 0;">
+      <div class="container text-center reveal">
+        <h2 style="color:var(--green-dark); margin-bottom:.5rem;">Why Become a Member?</h2>
+        <p style="color:var(--gray); margin-bottom:1.5rem;">Free to join – your community awaits</p>
+        <div class="row g-4" style="justify-content:center;">
+          <div class="col-3"><div style="font-size:2rem; margin-bottom:.4rem;">🗺️</div><p style="font-size:.88rem; font-weight:600; color:var(--green-dark);">Exclusive route guides</p></div>
+          <div class="col-3"><div style="font-size:2rem; margin-bottom:.4rem;">🎒</div><p style="font-size:.88rem; font-weight:600; color:var(--green-dark);">Member gear discounts</p></div>
+          <div class="col-3"><div style="font-size:2rem; margin-bottom:.4rem;">📰</div><p style="font-size:.88rem; font-weight:600; color:var(--green-dark);">Monthly trail newsletter</p></div>
+          <div class="col-3"><div style="font-size:2rem; margin-bottom:.4rem;">🤝</div><p style="font-size:.88rem; font-weight:600; color:var(--green-dark);">Community events</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registration form -->
+    <section class="section-pad">
+      <div class="container">
+        <div class="form-section reveal" style="max-width:820px; margin:0 auto;">
+
+          <!-- Live member count from DB -->
+          <div class="member-count-banner" id="member-count-banner">
+            🏕️ Loading member count…
+          </div>
+
+          <h1 style="text-align:center; font-size:1.6rem; margin-bottom:.3rem;">Membership Registration</h1>
+          <p style="text-align:center; color:var(--gray); margin-bottom:1.5rem; font-size:.9rem;">
+            Fields marked <span class="required">*</span> are required
+          </p>
+
+          <form id="membershipForm" novalidate>
+
+            <h3 class="form-section-title">Login Details</h3>
+            <div class="row g-4">
+              <div class="col-6">
+                <label class="form-label" for="mem-email">Email <span class="required">*</span></label>
+                <input type="text" id="mem-email" class="form-control" placeholder="your@email.com" autocomplete="email">
+                <p class="error-msg" id="err-mem-email">Please enter a valid email address.</p>
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="mem-password">Password <span class="required">*</span></label>
+                <input type="password" id="mem-password" class="form-control" placeholder="Min. 8 characters" autocomplete="new-password">
+                <p class="error-msg" id="err-mem-password">Password must be at least 8 characters.</p>
+              </div>
+            </div>
+
+            <h3 class="form-section-title">Contact Details</h3>
+            <div class="row g-4">
+              <div class="col-6">
+                <label class="form-label" for="mem-firstname">First Name <span class="required">*</span></label>
+                <input type="text" id="mem-firstname" class="form-control" autocomplete="given-name">
+                <p class="error-msg" id="err-mem-firstname">Please enter your first name.</p>
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="mem-surname">Surname <span class="required">*</span></label>
+                <input type="text" id="mem-surname" class="form-control" autocomplete="family-name">
+                <p class="error-msg" id="err-mem-surname">Please enter your surname.</p>
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="mem-mobile">Mobile <span class="required">*</span></label>
+                <input type="text" id="mem-mobile" class="form-control" placeholder="0412345678" autocomplete="tel" maxlength="15">
+                <p class="error-msg" id="err-mem-mobile">Mobile must be exactly 10 digits.</p>
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="mem-dob">Birth Date <span class="required">*</span></label>
+                <input type="date" id="mem-dob" class="form-control" autocomplete="bday">
+                <p class="error-msg" id="err-mem-dob">Please enter your date of birth.</p>
+              </div>
+            </div>
+
+            <h3 class="form-section-title">Address</h3>
+            <div class="row g-4">
+              <div class="col-12">
+                <label class="form-label" for="mem-address">Street Address <span class="required">*</span></label>
+                <input type="text" id="mem-address" class="form-control" autocomplete="address-line1">
+                <p class="error-msg" id="err-mem-address">Please enter your street address.</p>
+              </div>
+              <div class="col-5">
+                <label class="form-label" for="mem-city">City <span class="required">*</span></label>
+                <input type="text" id="mem-city" class="form-control" autocomplete="address-level2">
+                <p class="error-msg" id="err-mem-city">Please enter your city.</p>
+              </div>
+              <div class="col-4">
+                <label class="form-label" for="mem-state">State <span class="required">*</span></label>
+                <select id="mem-state" class="form-control" autocomplete="address-level1">
+                  <option value="">Choose…</option>
+                  <option>VIC</option><option>NSW</option><option>QLD</option>
+                  <option>SA</option><option>WA</option><option>TAS</option>
+                  <option>ACT</option><option>NT</option>
+                </select>
+                <p class="error-msg" id="err-mem-state">Please select your state.</p>
+              </div>
+              <div class="col-3">
+                <label class="form-label" for="mem-postcode">Postcode <span class="required">*</span></label>
+                <input type="text" id="mem-postcode" class="form-control" maxlength="4" autocomplete="postal-code">
+                <p class="error-msg" id="err-mem-postcode">Postcode must be 4 digits.</p>
+              </div>
+            </div>
+
+            <h3 class="form-section-title">Trail Preferences</h3>
+            <div class="row g-4">
+              <div class="col-12">
+                <label class="form-label">Favourite trail types <em style="font-weight:400;">(choose multiple)</em></label>
+                <div style="display:flex; flex-wrap:wrap; gap:.75rem; margin-top:.4rem;">
+                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;cursor:pointer;"><input type="checkbox" name="trailTypes" value="coastal"> Easy Coastal</label>
+                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;cursor:pointer;"><input type="checkbox" name="trailTypes" value="river"> River Walk</label>
+                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;cursor:pointer;"><input type="checkbox" name="trailTypes" value="forest"> Forest Track</label>
+                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;cursor:pointer;"><input type="checkbox" name="trailTypes" value="mountain"> Mountain Pass</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Preferred difficulty level</label>
+                <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:.4rem;">
+                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;cursor:pointer;"><input type="radio" name="difficulty" value="Easy"> Easy</label>
+                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;cursor:pointer;"><input type="radio" name="difficulty" value="Moderate"> Moderate</label>
+                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;cursor:pointer;"><input type="radio" name="difficulty" value="Hard"> Hard</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="mem-message">Leave us a message</label>
+                <textarea id="mem-message" class="form-control" rows="3" placeholder="Anything you'd like us to know…" style="resize:vertical;"></textarea>
+              </div>
+            </div>
+
+            <div style="margin:1.4rem 0;">
+              <label style="display:flex;align-items:center;gap:.5rem;font-size:.9rem;cursor:pointer;margin-bottom:.5rem;">
+                <input type="checkbox" id="newsletter"> Sign up for our monthly trail newsletter
+              </label>
+              <label style="display:flex;align-items:center;gap:.5rem;font-size:.9rem;cursor:pointer;">
+                <input type="checkbox" id="mem-terms"> I agree to the <a href="contact.html" style="color:var(--green-dark);">terms and conditions</a>
+              </label>
+              <p class="error-msg" id="err-mem-terms">You must agree to the terms and conditions.</p>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:1rem; flex-wrap:wrap;">
+              <button type="reset" class="btn-outline-trail">Reset</button>
+              <button type="submit" class="btn-trail" id="mem-submit-btn">Submit Registration</button>
+            </div>
+
+            <div class="success-box" id="membership-success" role="alert"></div>
+            <p class="server-err" id="mem-err" style="display:none;"></p>
+
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a><a href="routes.html">Routes</a>
+      <a href="gear.html">Gear</a><a href="stories.html">Stories</a>
+      <a href="membership.html">Membership</a><a href="contact.html">Contact</a>
+    </div>
+    <p>&copy; 2026 River Trail Adventures &nbsp;|&nbsp; Last updated: April 2026 &nbsp;|&nbsp;
+       <a href="mailto:info@rivertrail.com.au">info@rivertrail.com.au</a></p>
+  </footer>
+  <button id="back-to-top" aria-label="Back to top">&#8679;</button>
+
+  <script src="main.js"></script>
+  <script>
+  /* ── Load member count from DB ──────────────────────── */
+  (async function() {
+    try {
+      const res  = await fetch('/api/members/count');
+      const data = await res.json();
+      if (data.success) {
+        const n = data.count;
+        document.getElementById('member-count-banner').textContent =
+          `🏕️ Join ${n} member${n!==1?'s':''} already exploring Australia's best trails!`;
+      }
+    } catch { document.getElementById('member-count-banner').style.display='none'; }
+  })();
+
+  /* ── Validation helper ──────────────────────────────── */
+  function v(id, errId, fail) {
+    const el = document.getElementById(id);
+    const er = document.getElementById(errId);
+    if (!el) return true;
+    if (fail) { el.classList.add('is-invalid'); er.classList.add('visible'); return false; }
+    el.classList.remove('is-invalid'); er.classList.remove('visible'); return true;
+  }
+
+  /* live-clear */
+  const fMap = {
+    'mem-email':'err-mem-email','mem-password':'err-mem-password',
+    'mem-firstname':'err-mem-firstname','mem-surname':'err-mem-surname',
+    'mem-mobile':'err-mem-mobile','mem-dob':'err-mem-dob',
+    'mem-address':'err-mem-address','mem-city':'err-mem-city',
+    'mem-state':'err-mem-state','mem-postcode':'err-mem-postcode'
+  };
+  Object.entries(fMap).forEach(([id, errId]) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', function(){
+      this.classList.remove('is-invalid');
+      document.getElementById(errId).classList.remove('visible');
+    });
+    if (el) el.addEventListener('change', function(){
+      this.classList.remove('is-invalid');
+      document.getElementById(errId).classList.remove('visible');
+    });
+  });
+
+  /* ── Form submit → POST /api/members ────────────────── */
+  document.getElementById('membershipForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn  = document.getElementById('mem-submit-btn');
+    const sErr = document.getElementById('mem-err');
+    const sOk  = document.getElementById('membership-success');
+    sErr.style.display = 'none'; sOk.classList.remove('visible');
+
+    const email    = document.getElementById('mem-email').value.trim();
+    const password = document.getElementById('mem-password').value;
+    const first    = document.getElementById('mem-firstname').value.trim();
+    const surname  = document.getElementById('mem-surname').value.trim();
+    const mobile   = document.getElementById('mem-mobile').value.trim().replace(/\s/g,'');
+    const dob      = document.getElementById('mem-dob').value;
+    const address  = document.getElementById('mem-address').value.trim();
+    const city     = document.getElementById('mem-city').value.trim();
+    const state    = document.getElementById('mem-state').value;
+    const postcode = document.getElementById('mem-postcode').value.trim();
+    const terms    = document.getElementById('mem-terms').checked;
+
+    const trailTypes = [...document.querySelectorAll('input[name="trailTypes"]:checked')].map(c=>c.value);
+    const difficulty = (document.querySelector('input[name="difficulty"]:checked') || {}).value || 'Easy';
+    const newsletter = document.getElementById('newsletter').checked;
+
+    let ok = true;
+    ok = v('mem-email',    'err-mem-email',    !email.includes('@')||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) && ok;
+    ok = v('mem-password', 'err-mem-password', password.length < 8) && ok;
+    ok = v('mem-firstname','err-mem-firstname', first==='' ) && ok;
+    ok = v('mem-surname',  'err-mem-surname',   surname==='') && ok;
+    ok = v('mem-mobile',   'err-mem-mobile',    !/^\d{10}$/.test(mobile)) && ok;
+    ok = v('mem-dob',      'err-mem-dob',       dob==='') && ok;
+    ok = v('mem-address',  'err-mem-address',   address==='') && ok;
+    ok = v('mem-city',     'err-mem-city',      city==='') && ok;
+    ok = v('mem-state',    'err-mem-state',     state==='') && ok;
+    ok = v('mem-postcode', 'err-mem-postcode',  !/^\d{4}$/.test(postcode)) && ok;
+
+    const termsEl  = document.getElementById('mem-terms');
+    const termsErr = document.getElementById('err-mem-terms');
+    if (!terms) { termsErr.classList.add('visible'); ok = false; }
+    else termsErr.classList.remove('visible');
+
+    if (!ok) return;
+
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    try {
+      const res  = await fetch('/api/members', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          email, password, first_name: first, surname, mobile, dob,
+          address, city, state, postcode, trail_types: trailTypes,
+          difficulty, newsletter
+        })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        sOk.textContent = '🎉 ' + data.message;
+        sOk.classList.add('visible');
+        this.reset();
+        Object.keys(fMap).forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('is-invalid');
+        });
+        // Refresh member count
+        const cr = await fetch('/api/members/count');
+        const cd = await cr.json();
+        if (cd.success) {
+          const n = cd.count;
+          document.getElementById('member-count-banner').textContent =
+            `🏕️ Join ${n} member${n!==1?'s':''} already exploring Australia's best trails!`;
+        }
+      } else {
+        sErr.textContent = '❌ ' + (data.error || (data.errors ? data.errors.map(x=>x.msg).join(' | ') : 'Error'));
+        sErr.style.display = 'block';
+      }
+    } catch {
+      sErr.textContent = '❌ Cannot reach server. Is it running?';
+      sErr.style.display = 'block';
+    } finally { btn.textContent = 'Submit Registration'; btn.disabled = false; }
+  });
+  </script>
+</body>
+</html>
