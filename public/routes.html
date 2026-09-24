@@ -375,19 +375,19 @@
     starEls.forEach(star => {
       star.addEventListener('mouseenter', () => {
         starEls.forEach(s =>
-          s.classList.toggle('active', parseInt(s.dataset.val) <= parseInt(star.dataset.val))
+          s.classList.toggle('active', Number.parseInt(s.dataset.val) <= Number.parseInt(star.dataset.val))
         );
       });
       star.addEventListener('mouseleave', () => {
         starEls.forEach(s =>
-          s.classList.toggle('active', parseInt(s.dataset.val) <= selectedRating)
+          s.classList.toggle('active', Number.parseInt(s.dataset.val) <= selectedRating)
         );
       });
       star.addEventListener('click', () => {
-        selectedRating = parseInt(star.dataset.val);
+        selectedRating = Number.parseInt(star.dataset.val);
         starsContainer.dataset.rating = selectedRating;           // ← store on the container
         starEls.forEach(s =>
-          s.classList.toggle('active', parseInt(s.dataset.val) <= selectedRating)
+          s.classList.toggle('active', Number.parseInt(s.dataset.val) <= selectedRating)
         );
       });
     });
@@ -458,7 +458,7 @@
 
     const reviewer = nameEl.value.trim();
     const comment  = commentEl.value.trim();
-    const rating   = parseInt(starsEl.dataset.rating || '0');
+    const rating   = Number.parseInt(starsEl.dataset.rating || '0');
 
     if (!reviewer) { errEl.textContent='Please enter your name.'; errEl.style.display='block'; return; }
     if (!rating)   { errEl.textContent='Please select a star rating.'; errEl.style.display='block'; return; }
@@ -508,11 +508,11 @@
     ];
     const DIFF_LABEL = {1:'Easy', 2:'Moderate', 3:'Hard'};
 
-    const avgKm   = entries.reduce((s,e)=>s+(parseFloat(e.km)||0),0)/entries.length;
+    const avgKm   = entries.reduce((s,e)=>s+(Number.parseFloat(e.km)||0),0)/entries.length;
     const dCount  = {1:0,2:0,3:0};
     const dMap    = {}; CATALOGUE.forEach(t=>{dMap[t.name.toLowerCase()]=t.difficulty;});
     entries.forEach(e=>{ const d=dMap[e.trail.toLowerCase()]||1; dCount[d]=(dCount[d]||0)+1; });
-    const prefD   = parseInt(Object.entries(dCount).sort((a,b)=>b[1]-a[1])[0][0]);
+    const prefD   = Number.parseInt(Object.entries(dCount).sort((a,b)=>b[1]-a[1])[0][0]);
     const done    = new Set(entries.map(e=>e.trail.toLowerCase()));
     const last    = entries[0]?.trail?.toLowerCase()||'';
 

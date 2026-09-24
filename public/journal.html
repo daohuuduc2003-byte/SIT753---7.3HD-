@@ -490,7 +490,7 @@
             FEATURE: Interactive star picker
             Uses data-val attributes + mouseenter/click events
             Stores selected value in hidden input #log-rating
-            All numeric comparisons use parseInt() to avoid
+            All numeric comparisons use Number.parseInt() to avoid
             string-comparison bugs (the spaces-in-IDs lesson!)
           -->
           <div class="star-pick" id="log-stars" role="group" aria-label="Star rating">
@@ -662,7 +662,7 @@
    */
   function calculateStats(entries) {
     const totalHikes = entries.length;
-    const totalKm    = entries.reduce((s, e) => s + (parseFloat(e.km) || 0), 0);
+    const totalKm    = entries.reduce((s, e) => s + (Number.parseFloat(e.km) || 0), 0);
 
     // Difficulty breakdown — map known trails to difficulty level
     const diffMap = {};
@@ -768,7 +768,7 @@
       if (!entries.length) return [];
 
       // Average distance
-      const avgKm = entries.reduce((s,e)=>s+(parseFloat(e.km)||0),0) / entries.length;
+      const avgKm = entries.reduce((s,e)=>s+(Number.parseFloat(e.km)||0),0) / entries.length;
 
       // Preferred difficulty: mode of logged trails
       const diffCount = {1:0, 2:0, 3:0};
@@ -778,7 +778,7 @@
         const d = diffMap[e.trail.toLowerCase()] || 1;
         diffCount[d] = (diffCount[d]||0) + 1;
       });
-      const prefDiff = parseInt(Object.entries(diffCount).sort((a,b)=>b[1]-a[1])[0][0]);
+      const prefDiff = Number.parseInt(Object.entries(diffCount).sort((a,b)=>b[1]-a[1])[0][0]);
 
       // Completed trail names (lower-cased for comparison)
       const completed  = new Set(entries.map(e => e.trail.toLowerCase()));
@@ -880,7 +880,7 @@
       `<tr>
         <td><strong>${esc(e.trail)}</strong></td>
         <td>${esc(e.date)}</td>
-        <td>${parseFloat(e.km).toFixed(1)} km</td>
+        <td>${Number.parseFloat(e.km).toFixed(1)} km</td>
         <td>${esc(e.duration||'—')}</td>
         <td><span class="hike-stars">${'★'.repeat(e.rating)}${'☆'.repeat(5-e.rating)}</span></td>
         <td>
@@ -1028,19 +1028,19 @@
   starSpans.forEach(star => {
     star.addEventListener('mouseenter', () => {
       starSpans.forEach(s =>
-        s.classList.toggle('lit', parseInt(s.dataset.val) <= parseInt(star.dataset.val))
+        s.classList.toggle('lit', Number.parseInt(s.dataset.val) <= Number.parseInt(star.dataset.val))
       );
     });
     star.addEventListener('mouseleave', () => {
       starSpans.forEach(s =>
-        s.classList.toggle('lit', parseInt(s.dataset.val) <= selectedRating)
+        s.classList.toggle('lit', Number.parseInt(s.dataset.val) <= selectedRating)
       );
     });
     star.addEventListener('click', () => {
-      selectedRating = parseInt(star.dataset.val);
+      selectedRating = Number.parseInt(star.dataset.val);
       document.getElementById('log-rating').value = selectedRating;
       starSpans.forEach(s =>
-        s.classList.toggle('lit', parseInt(s.dataset.val) <= selectedRating)
+        s.classList.toggle('lit', Number.parseInt(s.dataset.val) <= selectedRating)
       );
     });
   });
@@ -1081,10 +1081,10 @@
   document.getElementById('modal-save-btn').addEventListener('click', () => {
     const trail  = document.getElementById('log-trail').value.trim();
     const date   = document.getElementById('log-date').value;
-    const dist   = parseFloat(document.getElementById('log-dist').value);
+    const dist   = Number.parseFloat(document.getElementById('log-dist').value);
     const dur    = document.getElementById('log-dur').value.trim();
     const notes  = document.getElementById('log-notes').value.trim();
-    const rating = parseInt(document.getElementById('log-rating').value);
+    const rating = Number.parseInt(document.getElementById('log-rating').value);
 
     // Client-side validation
     let valid = true;

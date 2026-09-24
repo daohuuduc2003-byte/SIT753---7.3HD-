@@ -224,7 +224,7 @@
     document.querySelectorAll('.add-cart').forEach(btn => {
       btn.addEventListener('click', () => {
         const name  = btn.dataset.name;
-        const price = parseInt(btn.dataset.price);
+        const price = Number.parseInt(btn.dataset.price);
         cart.push({ name, price });
         renderCart();
         btn.textContent = '✔ Added';

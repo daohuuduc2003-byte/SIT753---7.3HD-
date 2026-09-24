@@ -266,7 +266,7 @@
     const newsletter = document.getElementById('newsletter').checked;
 
     let ok = true;
-    ok = v('mem-email',    'err-mem-email',    !email.includes('@')||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) && ok;
+    ok = v('mem-email',    'err-mem-email',    !email.includes('@')||!/^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/.test(email)) && ok;
     ok = v('mem-password', 'err-mem-password', password.length < 8) && ok;
     ok = v('mem-firstname','err-mem-firstname', first==='' ) && ok;
     ok = v('mem-surname',  'err-mem-surname',   surname==='') && ok;

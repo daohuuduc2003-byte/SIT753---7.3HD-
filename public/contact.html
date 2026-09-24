@@ -234,7 +234,7 @@
 
     let ok = true;
     ok = v('contact-name',    'err-name',    name===''                                                    ) && ok;
-    ok = v('contact-email',   'err-email',   !email.includes('@')||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) && ok;
+    ok = v('contact-email',   'err-email',   !email.includes('@')||!/^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/.test(email)) && ok;
     ok = v('contact-phone',   'err-phone',   !/^\d{7,15}$/.test(phone.replace(/\s/g,''))                  ) && ok;
     ok = v('contact-message', 'err-message', message.length < 10                                           ) && ok;
     if (!ok) return;
