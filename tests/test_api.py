@@ -134,3 +134,25 @@ def test_delete_review(client):
     rid = client.post("/api/reviews", json=REVIEW).get_json()["id"]
     assert client.delete(f"/api/reviews/{rid}").status_code == 200
     assert client.delete(f"/api/reviews/{rid}").status_code == 404
+
+
+# ── Security fixes ──
+
+def test_non_json_write_rejected(client):
+    r = client.post("/api/contacts", data="name=x&email=a@b.com", content_type="text/plain")
+    assert r.status_code == 415
+
+
+def test_no_cors_header_sent(client):
+    r = client.get("/api/reviews", headers={"Origin": "https://evil.example"})
+    assert "Access-Control-Allow-Origin" not in r.headers
+
+
+def test_email_regex_accepts_subdomains(client):
+    payload = dict(VALID_CONTACT, email="alex@mail.example.com.au")
+    assert client.post("/api/contacts", json=payload).status_code == 201
+
+
+def test_email_regex_rejects_missing_domain_part(client):
+    payload = dict(VALID_CONTACT, email="alex@example")
+    assert client.post("/api/contacts", json=payload).status_code == 422

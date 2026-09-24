@@ -10,11 +10,9 @@ import os, re, sqlite3, html
 from contextlib import contextmanager
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
 from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__, static_folder="public")
-CORS(app)
 metrics = PrometheusMetrics(app)   # exposes /metrics for the Monitoring stage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -90,6 +88,17 @@ def clean(s, maxlen=1000):
 def err(msg, code=400):
     return jsonify({"success": False, "error": msg}), code
 
+# ── Request guard: API writes must be JSON ──
+# A browser can only send application/json to another site after a CORS
+# preflight. There is no CORS policy, so that preflight fails and other
+# websites cannot forge writes to this API (CSRF protection).
+
+@app.before_request
+def require_json_for_writes():
+    if request.path.startswith("/api/") and request.method in ("POST", "PUT", "PATCH"):
+        if not request.is_json:
+            return err("Content-Type must be application/json.", 415)
+
 # ── Health check (used by Deploy, Release and Monitoring) ──
 
 @app.route("/health")
@@ -117,7 +126,7 @@ def static_files(filename):
 
 @app.route("/api/contacts", methods=["POST"])
 def create_contact():
-    data = request.get_json(force=True, silent=True) or {}
+    data = request.get_json(silent=True) or {}
 
     name    = clean(data.get("name", ""))
     email   = clean(data.get("email", ""))
@@ -129,7 +138,7 @@ def create_contact():
     errors = []
     if not name:
         errors.append("Name is required.")
-    if not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", email):
+    if not re.match(r"^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$", email):
         errors.append("A valid email address is required.")
     if not re.match(r"^\d{7,15}$", phone):
         errors.append("Phone must be 7–15 digits.")
@@ -211,7 +220,7 @@ def delete_contact(contact_id):
 
 @app.route("/api/contacts/<int:contact_id>/status", methods=["PATCH"])
 def update_contact_status(contact_id):
-    data   = request.get_json(force=True, silent=True) or {}
+    data   = request.get_json(silent=True) or {}
     status = data.get("status", "")
     if status not in ("new", "read", "resolved"):
         return err("Status must be new, read, or resolved.")
@@ -234,7 +243,7 @@ def update_contact_status(contact_id):
 
 @app.route("/api/members", methods=["POST"])
 def create_member():
-    data = request.get_json(force=True, silent=True) or {}
+    data = request.get_json(silent=True) or {}
 
     email      = clean(data.get("email", ""))
     first_name = clean(data.get("first_name", ""))
@@ -252,7 +261,7 @@ def create_member():
 
     # ── Validation ──
     errors = []
-    if not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", email):
+    if not re.match(r"^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$", email):
         errors.append("A valid email is required.")
     if len(str(password)) < 8:
         errors.append("Password must be at least 8 characters.")
@@ -312,7 +321,7 @@ def member_count():
 
 @app.route("/api/reviews", methods=["POST"])
 def create_review():
-    data = request.get_json(force=True, silent=True) or {}
+    data = request.get_json(silent=True) or {}
 
     trail_name = clean(data.get("trail_name", ""))
     reviewer   = clean(data.get("reviewer", ""), 80)
