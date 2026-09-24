@@ -23,3 +23,8 @@ test-results.xml
 # Pipeline output
 reports/
 *.tar.gz
+
+# Generated at deploy time (contains the SMTP password)
+deploy/monitoring/alertmanager/alertmanager.yml
+release.json
+smoke-*.xml

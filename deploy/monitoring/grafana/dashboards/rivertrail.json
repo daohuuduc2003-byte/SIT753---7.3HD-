@@ -1,0 +1,36 @@
+{
+  "uid": "rivertrail",
+  "title": "River Trail Production",
+  "schemaVersion": 39,
+  "time": { "from": "now-30m", "to": "now" },
+  "refresh": "10s",
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "App up (1 = up)",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 6 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "up{job=\"rivertrail\"}" } ]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Requests per second by status",
+      "gridPos": { "x": 6, "y": 0, "w": 18, "h": 6 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "legendFormat": "{{status}}",
+        "expr": "sum by (status) (rate(flask_http_request_total{job=\"rivertrail\"}[1m]))" } ]
+    },
+    {
+      "id": 3, "type": "timeseries", "title": "95th percentile response time (seconds)",
+      "gridPos": { "x": 0, "y": 6, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A",
+        "expr": "histogram_quantile(0.95, sum by (le) (rate(flask_http_request_duration_seconds_bucket{job=\"rivertrail\"}[5m])))" } ]
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Error rate (share of 5xx responses)",
+      "gridPos": { "x": 12, "y": 6, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A",
+        "expr": "sum(rate(flask_http_request_total{job=\"rivertrail\",status=~\"5..\"}[2m])) / clamp_min(sum(rate(flask_http_request_total{job=\"rivertrail\"}[2m])), 1e-9)" } ]
+    }
+  ]
+}

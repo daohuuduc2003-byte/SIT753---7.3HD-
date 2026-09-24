@@ -1,0 +1,19 @@
+global:
+  smtp_smarthost: "smtp.gmail.com:587"
+  smtp_from: "__SMTP_USER__"
+  smtp_auth_username: "__SMTP_USER__"
+  smtp_auth_password: "__SMTP_PASS__"
+  smtp_require_tls: true
+
+route:
+  receiver: team-email
+  group_by: ["alertname"]
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 1h
+
+receivers:
+  - name: team-email
+    email_configs:
+      - to: "__SMTP_USER__"
+        send_resolved: true

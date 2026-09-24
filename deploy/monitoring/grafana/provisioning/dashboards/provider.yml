@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: rivertrail
+    folder: River Trail
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards
